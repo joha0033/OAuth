@@ -8,6 +8,7 @@ const mongoose = require('mongoose')
 // mongoose.Promise = global.Promise;
 // mongoose.connect('mongodb://localhost/APIAuthentication');
 mongoose.Promise = global.Promise;
+console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
 } else {
