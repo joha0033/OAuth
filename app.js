@@ -1,4 +1,4 @@
-const dotevn = require('dotenv').config();
+require('dotenv').config();
 const express = require('express')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
 } else {
-  mongoose.connect('mongodb://localhost/APIAuthentication');
+  mongoose.connect('mongodb://'process.env.DATABASE_CRED':'process.env.DATABASE_CRED'@ds121099.mlab.com:21099/'process.env.DATABASE_NAME);
 }
 
 
