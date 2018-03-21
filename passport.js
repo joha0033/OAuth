@@ -7,12 +7,14 @@ const User = require('./models/user');
 const GooglePlusTokenStrategy = require('passport-google-plus-token')
 const FacebookTokenStrategy = require('passport-facebook-token')
 const dotenv = require('dotenv').config();
+require('dotenv').config();
 
 // JSON WEB TOKENS STRATEGY
 passport.use(new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-  secretOrKey: process.env.JWT_SECRET_ENV
+  secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
+  console.log('payload',  payload);
   try {
     // Find the user specified in token
     const user = await User.findById(payload.sub);
