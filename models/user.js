@@ -5,24 +5,52 @@ const Schema = mongoose.Schema
 
  // create schema - describe the use
 const UserSchema = new Schema({
-  email: {
+  method: {
     type: String,
-    unique: true,
-    required: true,
-    lowercase: true
-  },
-  password: {
-    type: String,
+    enum: ['local', 'google', 'facebook'],
     required: true
+  },
+  google:{
+    id:{
+      type: String,
+    },
+    email:{
+      type: String,
+      lowercase: true
+    }
+  },
+  facebook: {
+    id:{
+      type: String,
+    },
+    email:{
+      type: String,
+      lowercase: true
+    }
+  },
+  local: {
+    email: {
+      type: String,
+      lowercase: true
+    },
+    password: {
+      type: String,
+    }
   }
+
 })
 
 UserSchema.pre('save', async function(next){
+
+  if(this.method !== 'local'){
+    next()
+  }
+  
   try{
     // generate sale
     const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(this.password, salt)
-    this.password = hash
+    const hash = await bcrypt.hash(this.local.password, salt)
+    this.local.password = hash
     next()
   }catch(error){
     next(error)
@@ -31,7 +59,7 @@ UserSchema.pre('save', async function(next){
 
 UserSchema.methods.isValidPassWord = async function(newPassword){
   try{
-    return await bcrypt.compare(newPassword, this.password)
+    return await bcrypt.compare(newPassword, this.local.password)
   }catch(error){
 
   }
