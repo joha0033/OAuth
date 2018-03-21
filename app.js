@@ -12,7 +12,7 @@ console.log('dbURL', dbURL)
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
 } else {
-  mongoose.connect(dbURL);
+  mongoose.connect('mongodb://austin:austin@ds121099.mlab.com:21099/heroku_fwzsfljt');
   // mongoose.connect('mongodb://localhost/APIAuthentication');
 }
 
