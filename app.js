@@ -7,13 +7,14 @@ const mongoose = require('mongoose')
 mongoose.Promise = global.Promise;
 const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
 
-console.log(process.env.JWT_SECRET_ENV);
-console.log('dbURL', dbURL)
+// console.log(process.env.JWT_SECRET_ENV);
+// console.log('dbURL', dbURL)
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
 } else {
-  mongoose.connect('mongodb://austin:austin@ds121099.mlab.com:21099/heroku_fwzsfljt');
+  // mongoose.connect('mongodb://austin:austin@ds121099.mlab.com:21099/heroku_fwzsfljt');
   // mongoose.connect('mongodb://localhost/APIAuthentication');
+  mongoose.connect(dbURL);
 }
 
 
