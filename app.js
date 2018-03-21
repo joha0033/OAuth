@@ -11,7 +11,7 @@ mongoose.Promise = global.Promise;
 if (process.env.NODE_ENV === 'test') {
   mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
 } else {
-  mongoose.connect('mongodb://'process.env.DATABASE_CRED':'process.env.DATABASE_CRED'@ds121099.mlab.com:21099/'process.env.DATABASE_NAME);
+  mongoose.connect('mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME);
 }
 
 
