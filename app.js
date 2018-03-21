@@ -14,7 +14,7 @@ if (process.env.NODE_ENV === 'test') {
 } else {
   // mongoose.connect('mongodb://austin:austin@ds121099.mlab.com:21099/heroku_fwzsfljt');
   // mongoose.connect('mongodb://localhost/APIAuthentication');
-  mongoose.connect(dbURL);
+  mongoose.connect(process.env.MONGODB_URI || dbURL);
 }
 
 
