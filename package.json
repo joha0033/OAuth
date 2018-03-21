@@ -27,6 +27,6 @@
     "passport-local": "^1.0.0"
   },
   "engines": {
-    "node": "^5.6.1"
+    "node": "8.10.0"
   }
 }
