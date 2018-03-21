@@ -1,6 +1,6 @@
 if (process.env.NODE_ENV === 'test') {
   module.exports = {
-    JWT_SECRET: JWT_SECRET_ENV,
+    JWT_SECRET: process.env.JWT_SECRET_ENV,
     oauth: {
       google: {
         clientID: process.env.GOOGLE_CLIENT_ID,
@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'test') {
   };
 } else {
   module.exports = {
-    JWT_SECRET: '',
+    JWT_SECRET: process.env.JWT_SECRET_ENV,
     oauth: {
       google: {
         clientID: process.env.GOOGLE_CLIENT_ID,

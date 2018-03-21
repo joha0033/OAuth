@@ -3,6 +3,7 @@ const User = require('../models/user')
 
 //generate Token
 const signToken = (user) => {
+  console.log('signToken():', user);
   // respond with token
   return JWT.sign({
     iss: 'austin',
@@ -14,11 +15,13 @@ const signToken = (user) => {
 
 module.exports = {
   signUp: async (req, res, next) => {
-
+    console.log(req.value.body);
     // save data
     const { email, password } = req.value.body
+
     // check if email already exists in DB
-    const foundUser = await User.findOne({ 'local.email' : email })
+    const foundUser = await User.findOne({ "local.email" : email })
+    console.log('foundUser', foundUser);
     //if the user exists, send status and err message
     if(foundUser){
       return res.status(403).json({error: "email already exists"})
@@ -36,9 +39,10 @@ module.exports = {
     const token = signToken(newUser)
     res.status(200).json({ token })
   },
-
   signIn: async (req, res, next) => {
+
     //just need to generate token
+    console.log('req.user',req.user);
     const token = signToken(req.user)
     res.status(200).json({ token })
   },
@@ -47,12 +51,12 @@ module.exports = {
     res.json({ secret: 'you hit secret' })
   },
 
-  googlePlus: async (req, res, next) => {
+  googleOAuth: async (req, res, next) => {
     const token = signToken(req.user)
     res.status(200).json({ token })
   },
 
-  facebook: async (req, res, next) =>{
+  facebookOAuth: async (req, res, next) =>{
     console.log('req.user', req.user);
     const token = signToken(req.user)
     res.status(200).json({ token })

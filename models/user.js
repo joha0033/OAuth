@@ -41,11 +41,11 @@ const UserSchema = new Schema({
 })
 
 UserSchema.pre('save', async function(next){
-
+  console.log(this.method);
   if(this.method !== 'local'){
     next()
   }
-  
+
   try{
     // generate sale
     const salt = await bcrypt.genSalt(10)
@@ -57,11 +57,11 @@ UserSchema.pre('save', async function(next){
   }
 })
 
-UserSchema.methods.isValidPassWord = async function(newPassword){
-  try{
-    return await bcrypt.compare(newPassword, this.local.password)
-  }catch(error){
-
+UserSchema.methods.isValidPassword = async function(newPassword) {
+  try {
+    return await bcrypt.compare(newPassword, this.local.password);
+  } catch(error) {
+    throw new Error(error);
   }
 }
 
