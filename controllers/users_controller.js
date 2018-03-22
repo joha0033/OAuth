@@ -4,7 +4,7 @@ const { Jwt_Secret } = require('../configuration')
 
 //generate Token
 const signToken = (user) => {
-  // console.log('signToken():', Jwt_Secret);
+
   // respond with token
   console.log('signToken()/user:', user);
   return JWT.sign({
@@ -22,7 +22,7 @@ module.exports = {
   signUp: async (req, res, next) => {
 
     // save data
-    // const { email, password } = req.value.body
+    
     const { email, password } = req.body
 
     // check if email already exists in DB
@@ -68,10 +68,8 @@ module.exports = {
   },
 
   facebookOAuth: async (req, res, next) =>{
-    console.log('hit FB controller?');
     // create token and lets go!
     const token = signToken(req.user)
-    console.log(res.headersSent);
     res.status(200).json({ token })
   }
 }

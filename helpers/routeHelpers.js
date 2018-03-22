@@ -6,10 +6,10 @@ module.exports = {
 
     //schema is defined as schems.authSchema below
     return (req,res,next) => {
-      // console.log('req.body', req.body);
+
       // req.body will become result.value //
       const result = Joi.validate(req.body, schema)
-      // console.log("results", result);
+
       //any errors?
       if(result.error){
         return res.status(400).json(result.error)
@@ -22,7 +22,7 @@ module.exports = {
 
       // create req.value.body with results.value
       req.value['body'] = result.value
-      // console.log('req.value.body', req.value.body);
+      
       return next()
 
     }

@@ -15,8 +15,9 @@ passport.use('jwt', new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
-  console.log('in jwt strat');
+
   try {
+
     // Find the user specified in token
     const user = await User.findById(payload.sub);
 
@@ -37,15 +38,17 @@ passport.use('jwt', new JwtStrategy({
 
 // FACEBOOK Strategy
 passport.use('facebook-token', new FacebookTokenStrategy({
+
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret
+
 }, async (accessToken, refreshToken, profile, done) => {
-  console.log('profile', profile);
+
   try{
-    console.log('ln44 || passport.js TRY');
+
     //check if user has FB creds in db
     const existingUser = await User.findOne({'facebook.id': profile.id})
-    // console.log('ln47 || exisiting user?: ',existingUser);
+
     // if so, leave.
     if(existingUser){
 
@@ -62,7 +65,6 @@ passport.use('facebook-token', new FacebookTokenStrategy({
         email: profile.emails[0].value
       }
     })
-    // console.log(newUser);
 
     // saving user to db
     await newUser.save()
@@ -79,8 +81,10 @@ passport.use('facebook-token', new FacebookTokenStrategy({
 
 // GOOGLE Strategy
 passport.use('google-token', new GooglePlusTokenStrategy({
+
   clientID: config.oauth.google.clientID,
   clientSecret: config.oauth.google.clientSecret
+
 }, async (accessToken, refreshToken, profile, done) =>{
 
   const existingUser = await User.findOne({'google.id': profile.id})
