@@ -4,7 +4,7 @@ const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
-
+const config = require('./configuration')
 //ridiculous looking variable for database URL
 const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
 
@@ -33,8 +33,17 @@ if (!process.env.NODE_ENV === 'test') {
 //creates express app
 const app = express()
 
-app.use(cors())
+// app.use(cors())
 app.use(bodyParser.json())
+// app.use(function(req, res, next) {
+//   console.log('HEADERS',req.headers);
+//   res.header("Access-Control-Allow-Origin", "*");
+//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+//   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, PUT');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   next();
+// });
 
 
 // routes

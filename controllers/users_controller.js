@@ -6,6 +6,7 @@ const { Jwt_Secret } = require('../configuration')
 const signToken = (user) => {
   // console.log('signToken():', Jwt_Secret);
   // respond with token
+  console.log('signToken()/user:', user);
   return JWT.sign({
     iss: 'austin',
     sub: user._id,
@@ -15,10 +16,14 @@ const signToken = (user) => {
 }
 
 module.exports = {
+  test: (req, res, next) =>{
+    res.status(200).json('hit!')
+  },
   signUp: async (req, res, next) => {
 
     // save data
-    const { email, password } = req.value.body
+    // const { email, password } = req.value.body
+    const { email, password } = req.body
 
     // check if email already exists in DB
     const foundUser = await User.findOne({ "local.email" : email })
@@ -66,6 +71,7 @@ module.exports = {
     console.log('hit FB controller?');
     // create token and lets go!
     const token = signToken(req.user)
+    console.log(res.headersSent);
     res.status(200).json({ token })
   }
 }

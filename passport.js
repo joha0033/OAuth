@@ -9,6 +9,7 @@ const FacebookTokenStrategy = require('passport-facebook-token')
 const dotenv = require('dotenv').config();
 require('dotenv').config();
 
+
 // JSON WEB TOKENS STRATEGY
 passport.use('jwt', new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),

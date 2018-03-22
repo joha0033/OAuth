@@ -12,7 +12,7 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 
 //signup, first time, not in db
 router.route('/signup')
-  .post(validateBody(schemas.authSchema), passportJWT, UsersController.signUp);
+  .post(validateBody(schemas.authSchema), UsersController.signUp);
 
 // signin, because you're in the db and you know it
 router.route('/signin')
@@ -28,6 +28,6 @@ router.route('/oauth/facebook')
 
 //Access to secret resource if you have valid token
 router.route('/secret')
-  .get(UsersController.secret);
+  .get(passportJWT, UsersController.secret);
 
 module.exports = router;
