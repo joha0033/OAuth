@@ -44,7 +44,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
     console.log('ln44 || passport.js TRY');
     //check if user has FB creds in db
     const existingUser = await User.findOne({'facebook.id': profile.id})
-    console.log('ln47 || exisiting user?: ',existingUser);
+    // console.log('ln47 || exisiting user?: ',existingUser);
     // if so, leave.
     if(existingUser){
 
@@ -61,7 +61,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
         email: profile.emails[0].value
       }
     })
-    console.log(newUser);
+    // console.log(newUser);
 
     // saving user to db
     await newUser.save()
