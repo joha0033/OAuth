@@ -16,13 +16,13 @@ const signToken = (user) => {
 
 module.exports = {
   signUp: async (req, res, next) => {
-    console.log(req.value.body);
+
     // save data
     const { email, password } = req.value.body
 
     // check if email already exists in DB
     const foundUser = await User.findOne({ "local.email" : email })
-    console.log('foundUser', foundUser);
+
     //if the user exists, send status and err message
     if(foundUser){
       return res.status(403).json({error: "email already exists"})
@@ -36,29 +36,35 @@ module.exports = {
         password: password
       }
     })
+
+    // save user, hit them with a token!
     await newUser.save()
     const token = signToken(newUser)
-    res.status(200).json({ token })
-  },
-  signIn: async (req, res, next) => {
 
-    //just need to generate token
-    console.log('req.user',req.user);
+    res.status(200).json({ token })
+
+  },
+
+  signIn: async (req, res, next) => {
+    //just need to hit them with a token
     const token = signToken(req.user)
     res.status(200).json({ token })
   },
 
   secret: async (req, res, next) => {
+    //I dont have a lot of secrets
     res.json({ secret: 'you hit secret' })
   },
 
   googleOAuth: async (req, res, next) => {
+    // create token and lets go!
     const token = signToken(req.user)
     res.status(200).json({ token })
   },
 
   facebookOAuth: async (req, res, next) =>{
-    console.log('req.user', req.user);
+  console.log('hit FB controller?');
+    // create token and lets go!
     const token = signToken(req.user)
     res.status(200).json({ token })
   }
