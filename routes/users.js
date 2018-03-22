@@ -9,7 +9,8 @@ const UsersController = require('../controllers/users_controller');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
-
+router.route('/testGET').get(UsersController.testGET)
+router.route('/testPOST').post(UsersController.testPOST)
 //signup, first time, not in db
 router.route('/signup')
   .post(validateBody(schemas.authSchema), UsersController.signUp);

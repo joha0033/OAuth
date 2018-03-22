@@ -16,13 +16,15 @@ const signToken = (user) => {
 }
 
 module.exports = {
-  test: (req, res, next) =>{
-    res.status(200).json('hit!')
+  testGET: (req, res, next) =>{
+    res.status(200).json('hit! get')
+  },
+  testPOST: (req, res, next) =>{
+    res.status(200).json('hit! post')
   },
   signUp: async (req, res, next) => {
 
     // save data
-    
     const { email, password } = req.body
 
     // check if email already exists in DB
@@ -30,7 +32,9 @@ module.exports = {
 
     //if the user exists, send status and err message
     if(foundUser){
-      return res.status(403).json({error: "email already exists"})
+      console.log('email already exists')
+      return res.status(403).json({error: 'email already exists'})
+      // return res.status(403).res.({message:"email already exists"})
     }
 
     // create a user object with imported schema
@@ -41,7 +45,7 @@ module.exports = {
         password: password
       }
     })
-
+    console.log('newUser', newUser);
     // save user, hit them with a token!
     await newUser.save()
     const token = signToken(newUser)

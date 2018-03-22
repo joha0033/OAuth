@@ -32,10 +32,26 @@ if (!process.env.NODE_ENV === 'test') {
 
 //creates express app
 const app = express()
-
 app.use(cors())
 app.use(bodyParser.json())
-
+// // Provided origin of front end in whitelist list
+//     var whitelist = ['http://localhost:3000']
+//     var corsOptions = {
+//       origin: function (origin, callback) {
+//         if (whitelist.indexOf(origin) !== -1) {
+//           callback(null, true)
+//         } else {
+//           callback(new Error('Not allowed by CORS'))
+//         }
+//       }
+//     }
+//
+// app.use('/', cors(corsOptions));
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 // routes
 app.use('/users', require('./routes/users.js'))
