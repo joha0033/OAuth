@@ -29,7 +29,7 @@ module.exports = {
 
     // check if email already exists in DB
     const foundUser = await User.findOne({ "local.email" : email })
-
+    console.log('hiiit');
     //if the user exists, send status and err message
     if(foundUser){
       console.log('email already exists')
