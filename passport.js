@@ -51,12 +51,9 @@ passport.use('facebook-token', new FacebookTokenStrategy({
 
     // if so, leave.
     if(existingUser){
-
-      console.log('user already exists in DB');
       return done(null, existingUser)
-
     }
-    console.log('ln55 || user does NOT exisit newUser below');
+
     // if not, lets get you some.
     const newUser = new User({
       method: profile.provider,
@@ -68,7 +65,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
 
     // saving user to db
     await newUser.save()
-    console.log('saved');
+    
     // send user
     done(null, newUser)
 

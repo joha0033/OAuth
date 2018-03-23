@@ -6,7 +6,6 @@ const { Jwt_Secret } = require('../configuration')
 const signToken = (user) => {
 
   // respond with token
-  console.log('signToken()/user:', user);
   return JWT.sign({
     iss: 'austin',
     sub: user._id,
@@ -23,13 +22,13 @@ module.exports = {
     res.status(200).json('hit! post')
   },
   signUp: async (req, res, next) => {
-
+  
     // save data
     const { email, password } = req.body
 
     // check if email already exists in DB
     const foundUser = await User.findOne({ "local.email" : email })
-    console.log('hiiit');
+
     //if the user exists, send status and err message
     if(foundUser){
       console.log('email already exists')
@@ -45,7 +44,7 @@ module.exports = {
         password: password
       }
     })
-    console.log('newUser', newUser);
+
     // save user, hit them with a token!
     await newUser.save()
     const token = signToken(newUser)
@@ -74,6 +73,6 @@ module.exports = {
   facebookOAuth: async (req, res, next) =>{
     // create token and lets go!
     const token = signToken(req.user)
-    res.status(200).json({ token })
+    res.status(201).json({ token })
   }
 }
