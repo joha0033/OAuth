@@ -22,7 +22,7 @@ module.exports = {
 
       // create req.value.body with results.value
       req.value['body'] = result.value
-      
+
       return next()
 
     }
@@ -31,6 +31,7 @@ module.exports = {
   schemas: {
     //create the auth schema for joi, used as arg above
     authSchema: Joi.object().keys({
+      method: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().required()
 

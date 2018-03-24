@@ -65,7 +65,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
 
     // saving user to db
     await newUser.save()
-    
+
     // send user
     done(null, newUser)
 
@@ -116,7 +116,8 @@ passport.use('google-token', new GooglePlusTokenStrategy({
 
 // LOCAL STRATEGY
 passport.use('local', new LocalStrategy({
-  usernameField: 'email'
+  usernameField: 'email',
+  // methodField: 'method'
 }, async (email, password, done) => {
 
   try {

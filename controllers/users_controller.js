@@ -22,7 +22,7 @@ module.exports = {
     res.status(200).json('hit! post')
   },
   signUp: async (req, res, next) => {
-  
+
     // save data
     const { email, password } = req.body
 
@@ -47,8 +47,8 @@ module.exports = {
 
     // save user, hit them with a token!
     await newUser.save()
-    const token = signToken(newUser)
 
+    const token = signToken(newUser)
     res.status(200).json({ token })
 
   },
