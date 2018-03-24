@@ -20,8 +20,6 @@ if (process.env.NODE_ENV === 'test') {
   //when we're not testing
   mongoose.connect(process.env.MONGOLAB_MAROON_URI || dbURL);
 
-
-
 }
 
 
