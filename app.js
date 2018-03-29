@@ -9,11 +9,13 @@ const config = require('./configuration')
 const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
 
 
+
 mongoose.Promise = global.Promise;
 
 //incase we're testing
-if (process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) {
 
+  console.log('mongodb://localhost/APIAuthentication');
   mongoose.connect('mongodb://localhost/APIAuthentication');
 
 } else {

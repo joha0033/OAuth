@@ -7,10 +7,6 @@ if (process.env.NODE_ENV === 'test') {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       facebook: {
-        // backend prac
-        // clientID: process.env.FACEBOOK_CLIENT_ID_LOCAL,
-        // clientSecret: process.env.FACEBOOK_CLIENT_SECRET_LOCAL
-        // React Prac
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_SECRET_ID
       }
@@ -25,10 +21,6 @@ if (process.env.NODE_ENV === 'test') {
         clientSecret: process.env.GOOGLE_CLIENT_SECRET
       },
       facebook: {
-        // backend prac
-        // clientID: process.env.FACEBOOK_CLIENT_ID_LOCAL,
-        // clientSecret: process.env.FACEBOOK_CLIENT_SECRET_LOCAL
-        // React Prac
         clientID: process.env.FACEBOOK_CLIENT_ID,
         clientSecret: process.env.FACEBOOK_SECRET_ID
       }

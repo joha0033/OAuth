@@ -15,19 +15,24 @@ passport.use('jwt', new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
-
   try {
 
     // Find the user specified in token
     const user = await User.findById(payload.sub);
 
-    // If user doesn't exists, handle it
+    // ready the cargo captain!
+    let userAddToken = {
+      userData: user,
+      _id: payload.sub
+    }
+
+    // If user doesn't exists, handle it and get out.
     if (!user) {
       return done(null, false);
     }
 
     // Otherwise, return the user
-    done(null, user);
+    done(null, userAddToken);
 
   } catch(error) {
 
@@ -87,10 +92,7 @@ passport.use('google-token', new GooglePlusTokenStrategy({
   const existingUser = await User.findOne({'google.id': profile.id})
 
   if(existingUser){
-
-    console.log('user already exists in DB');
     return done(null, existingUser)
-
   }
 
   const newUser = new User({
@@ -117,7 +119,6 @@ passport.use('google-token', new GooglePlusTokenStrategy({
 // LOCAL STRATEGY
 passport.use('local', new LocalStrategy({
   usernameField: 'email',
-  // methodField: 'method'
 }, async (email, password, done) => {
 
   try {
@@ -127,9 +128,7 @@ passport.use('local', new LocalStrategy({
 
     //  no user? out!
     if (!user) {
-
       return done(null, false);
-
     }
 
     // Check if the password is correct
@@ -137,9 +136,7 @@ passport.use('local', new LocalStrategy({
 
     // If not, you can leave.
     if (!isMatch) {
-
       return done(null, false);
-
     }
 
     // Otherwise, return the user
