@@ -15,11 +15,9 @@ const signToken = (user) => {
 }
 
 module.exports = {
-  testGET: (req, res, next) =>{
-    res.status(200).json('hit! get')
-  },
-  testPOST: (req, res, next) =>{
-    res.status(200).json('hit! post')
+  getProfile: async (req, res, next) => {
+    console.log(req.params);
+    res.status(200)
   },
   signUp: async (req, res, next) => {
 
@@ -51,7 +49,10 @@ module.exports = {
     await newUser.save()
 
     const token = signToken(newUser)
-    res.status(200).json({ token })
+    res.status(200).json({
+      token,
+      userData: newUser.local
+     })
 
   },
 

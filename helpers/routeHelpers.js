@@ -34,7 +34,12 @@ module.exports = {
       method: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().required()
-
+    }),
+    postSchema: Joi.object().keys({
+      title: Joi.string().required(),
+      content: Joi.string().required(),
+      category: Joi.string().required(),
+      level: Joi.any().allow()
     })
   }
 }
