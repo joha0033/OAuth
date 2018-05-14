@@ -37,6 +37,14 @@ const UserSchema = new Schema({
   },
 
   local: {
+    firstName: {
+      type: String,
+      lowercase: true
+    },
+    lastName: {
+      type: String,
+      lowercase: true
+    },
     email: {
       type: String,
       lowercase: true
