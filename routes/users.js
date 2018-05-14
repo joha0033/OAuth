@@ -14,14 +14,12 @@ const passportJWT = passport.authenticate('jwt', { session: false });
 
 //signup, first time, not in db
 router.route('/signup')
-  .post(validateBody(schemas.authSchema), UsersController.signUp);
+  .post(validateBody(schemas.registerSchema), UsersController.signUp);
 
 // signin, because you're in the db and you know it
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
 
-// router.route('/profile/:id')
-//   .get(validateBody(schemas.authSchema), UsersController.getProfile)
 
 
 // Google+ route
