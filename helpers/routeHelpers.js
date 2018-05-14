@@ -30,8 +30,13 @@ module.exports = {
   },
   schemas: {
     //create the auth schema for joi, used as arg above
+    registerSchema: Joi.object().keys({
+      firstName: Joi.string(),
+      lastName: Joi.string(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required()
+    }),
     authSchema: Joi.object().keys({
-      method: Joi.string().required(),
       email: Joi.string().email().required(),
       password: Joi.string().required()
     }),
