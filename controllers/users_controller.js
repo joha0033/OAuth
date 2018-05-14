@@ -16,22 +16,20 @@ const signToken = (user) => {
 
 module.exports = {
   getProfile: async (req, res, next) => {
-    console.log(req.params);
     res.status(200)
   },
   signUp: async (req, res, next) => {
-
     // save data
-    const { email, password } = req.body
+    const { firstName, lastName, email, password } = req.body
 
     if(process.env.NODE_ENV === 'development'){
       const deleteUser = await User.findOne({ "local.email" : email }).remove().exec()
     }
+
     // check if email already exists in DB
     const foundUser = await User.findOne({ "local.email" : email })
 
     //if the user exists, send status and err message
-
     if(foundUser){
       return res.status(403).json({error: 'email already exists'})
     }
@@ -40,31 +38,44 @@ module.exports = {
     const newUser = new User({
       method: 'local',
       local: {
+        firstName: firstName,
+        lastName: lastName,
         email: email,
         password: password
       }
     })
-
+  
+    
     // save user, hit them with a token!
     await newUser.save()
-
+    
     const token = signToken(newUser)
     res.status(200).json({
       token,
-      userData: newUser.local
+      email: newUser.local.email,
+      firstName: newUser.local.firstName,
+      lastName: newUser.local.lastName
      })
 
   },
-
   signIn: async (req, res, next) => {
-    //just need to hit them with a token
-    // console.log(req.user);
     const token = signToken(req.user)
-    res.status(200).json({ token })
+    
+    const foundUser = await User.findOne({ "local.email" : req.user.local.email })
+    let { firstName, lastName, email } = foundUser.local;
+    firstName === undefined ? firstName = "First name N/A, please update profile information" : null
+    lastName === undefined ? lastName = "Last name N/A, please update profile information" : null
+    
+    res.status(200).json({ 
+      firstName,
+      lastName,
+      email,
+      token
+     })
   },
-
   secret: async (req, res, next) => {
     //regenerate token for user?
+
     const token = signToken(req.user)
     //I dont have a lot of secrets
     res.json({
