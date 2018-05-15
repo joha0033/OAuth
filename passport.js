@@ -43,30 +43,37 @@ passport.use('jwt', new JwtStrategy({
 
 // FACEBOOK Strategy
 passport.use('facebook-token', new FacebookTokenStrategy({
-
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret
-
 }, async (accessToken, refreshToken, profile, done) => {
-
+  console.log(accessToken, refreshToken, profile);
+  
   try{
 
     //check if user has FB creds in db
     const existingUser = await User.findOne({'facebook.id': profile.id})
-
+    console.log('existingUser',existingUser);
+    console.log('profile', profile);
+    
+    
     // if so, leave.
     if(existingUser){
       return done(null, existingUser)
     }
-
+    
     // if not, lets get you some.
     const newUser = new User({
       method: profile.provider,
       facebook: {
         id: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
         email: profile.emails[0].value
       }
     })
+
+    console.log('newUser', newUser);
+    
 
     // saving user to db
     await newUser.save()
