@@ -8,8 +8,6 @@ const config = require('./configuration')
 //ridiculous looking variable for database URL
 const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
 
-
-
 mongoose.Promise = global.Promise;
 
 //incase we're testing
