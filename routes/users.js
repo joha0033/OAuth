@@ -11,7 +11,6 @@ const UsersController = require('../controllers/users_controller');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
-
 //signup, first time, not in db
 router.route('/signup')
   .post(validateBody(schemas.registerSchema), UsersController.signUp);
@@ -20,32 +19,27 @@ router.route('/signup')
 router.route('/signin')
   .post(validateBody(schemas.authSchema), passportSignIn, UsersController.signIn);
 
-
-
 // Google+ route
 router.route('/oauth/google')
   .post(passport.authenticate('google-token', { session: false }), UsersController.googleOAuth);
-
 
 
 /////////////////////
 // FACEBOOK ROUTES //
 /////////////////////
 
-if(process.env.NODE_ENV === 'development'){
+// if(process.env.NODE_ENV === 'development'){
 
-  // FAKE FACEBOOK
-  router.route('/oauth/facebook')
-    .post(UsersController.FAKEfacebookOAuth);
+//   // FAKE FACEBOOK
+//   router.route('/oauth/facebook')
+//     .post(UsersController.FAKEfacebookOAuth);
 
-} else {
+// } else {
 
   // Facebook Route
   router.route('/oauth/facebook')
     .post(passport.authenticate('facebook-token', { session: false }), UsersController.facebookOAuth);
-
-}
-
+// }
 
 //Access to secret resource if you have valid token
 router.route('/secret')
