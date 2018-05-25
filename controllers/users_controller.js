@@ -1,13 +1,18 @@
+
+
 const JWT = require('jsonwebtoken')
 const User = require('../models/user')
 const { Jwt_Secret } = require('../configuration')
 
 //generate Token
 const signToken = (user) => {
-
+  let {firstName, lastName, email } = user.userData.local
   // respond with token
   return JWT.sign({
     iss: 'austin',
+    firstName,
+    lastName,
+    email,
     sub: user._id,
     iat: new Date().getTime(),
     exp: new Date().setDate(new Date().getDate() + 1 )
@@ -15,8 +20,19 @@ const signToken = (user) => {
 }
 
 module.exports = {
+
   getProfile: async (req, res, next) => {
-    res.status(200)
+    //regenerate token for user?
+    
+    const token = signToken(req.user)
+    //I dont have a lot of secrets
+    res.json({
+      token: token,
+      payload: {
+        ...req.user.userData.local,
+        _id: req.user._id
+      }
+    })
   },
   signUp: async (req, res, next) => {
     // save data
@@ -63,10 +79,15 @@ module.exports = {
     
     const foundUser = await User.findOne({ "local.email" : req.user.local.email })
     let { firstName, lastName, email } = foundUser.local;
+    let id = foundUser._id
+
+    console.log(foundUser._id);
+    
     firstName === undefined ? firstName = "First name N/A, please update profile information" : null
     lastName === undefined ? lastName = "Last name N/A, please update profile information" : null
     
-    res.status(200).json({ 
+    res.status(200).json({
+      id,
       firstName,
       lastName,
       email,
@@ -75,15 +96,15 @@ module.exports = {
   },
   secret: async (req, res, next) => {
     //regenerate token for user?
-
+    
     const token = signToken(req.user)
     //I dont have a lot of secrets
     res.json({
       token: token,
-      payload: req.user
+      _id: req.user._id,
+      payload: req.user.userData.local
     })
   },
-
   googleOAuth: async (req, res, next) => {
     // create token and lets go!
     const token = signToken(req.user)

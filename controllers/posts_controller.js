@@ -7,8 +7,6 @@ module.exports ={
     
     const { title, content, category, level } = req.body
 
-
-
     console.log('title, content',title, content);
 
     let titleTaken = await Post.findOne({ title  })

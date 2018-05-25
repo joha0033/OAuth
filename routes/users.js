@@ -23,6 +23,10 @@ router.route('/signin')
 router.route('/oauth/google')
   .post(passport.authenticate('google-token', { session: false }), UsersController.googleOAuth);
 
+router.route('/profile/:id')
+  .get(passportJWT, UsersController.getProfile)
+
+
 
 /////////////////////
 // FACEBOOK ROUTES //

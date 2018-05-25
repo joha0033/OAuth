@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
 
+// shorten user ID some how...
  // create schema - describe the user
 const UserSchema = new Schema({
   method: {

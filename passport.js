@@ -16,10 +16,10 @@ passport.use('jwt', new JwtStrategy({
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
   try {
-
+    
     // Find the user specified in token
     const user = await User.findById(payload.sub);
-
+    
     // ready the cargo captain!
     let userAddToken = {
       userData: user,
@@ -46,6 +46,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret
 }, async (accessToken, refreshToken, profile, done) => {
+  
   console.log(accessToken, refreshToken, profile);
   
   try{
