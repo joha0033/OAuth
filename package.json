@@ -1,21 +1,24 @@
 {
   "name": "expressbasic",
   "version": "1.0.0",
-  "description": "",
+  "description": "basic OAuth practice",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon index.js",
+    "start": "NODE_ENV=production nodemon index.js",
+    "dev": "NODE_ENV=development nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
+  "author": "joha0033",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.2",
+    "cors": "^2.8.4",
     "dotenv": "^5.0.1",
-    "express": "^4.16.3",
+    "express": "4.16.3",
     "express-promise-router": "^3.0.1",
+    "favicon": "0.0.2",
     "joi": "^13.1.2",
     "jsonwebtoken": "^8.2.0",
     "mongoose": "^5.0.11",
@@ -23,6 +26,7 @@
     "passport": "^0.4.0",
     "passport-facebook-token": "^3.3.0",
     "passport-google-plus-token": "^2.1.0",
+    "passport-http": "^0.3.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0"
   }

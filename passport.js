@@ -7,25 +7,37 @@ const User = require('./models/user');
 const GooglePlusTokenStrategy = require('passport-google-plus-token')
 const FacebookTokenStrategy = require('passport-facebook-token')
 const dotenv = require('dotenv').config();
+require('dotenv').config();
+
 
 // JSON WEB TOKENS STRATEGY
-passport.use(new JwtStrategy({
+passport.use('jwt', new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-  secretOrKey: process.env.JWT_SECRET_ENV
+  secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
   try {
+    console.log(payload.sub);
+    
     // Find the user specified in token
-    const user = await User.findById(payload.sub);
+    const foundUser = await User.findById(payload.sub);
+    
+    // ready the cargo captain!
+    let user = {
+      userData: foundUser,
+      _id: payload.sub
+    }
 
-    // If user doesn't exists, handle it
+    // If user doesn't exists, handle it and get out.
     if (!user) {
       return done(null, false);
     }
-
     // Otherwise, return the user
     done(null, user);
+
   } catch(error) {
+
     done(error, false);
+
   }
 }));
 
@@ -33,48 +45,64 @@ passport.use(new JwtStrategy({
 passport.use('facebook-token', new FacebookTokenStrategy({
   clientID: config.oauth.facebook.clientID,
   clientSecret: config.oauth.facebook.clientSecret
-}, async (acccessToken, refreshToken, profile, done) => {
-
+}, async (accessToken, refreshToken, profile, done) => {
+  
+  console.log(accessToken, refreshToken, profile);
+  
   try{
 
+    //check if user has FB creds in db
     const existingUser = await User.findOne({'facebook.id': profile.id})
+    console.log('existingUser',existingUser);
+    console.log('profile', profile);
+    
+    
+    // if so, leave.
     if(existingUser){
-      console.log('user already exists in DB');
       return done(null, existingUser)
     }
+    
+    // if not, lets get you some.
     const newUser = new User({
-      method: 'google',
+      method: profile.provider,
       facebook: {
         id: profile.id,
+        firstName: profile.name.givenName,
+        lastName: profile.name.familyName,
         email: profile.emails[0].value
       }
     })
+
+    console.log('newUser', newUser);
+    
+
+    // saving user to db
     await newUser.save()
+
+    // send user
     done(null, newUser)
 
   }catch(error){
+
     done(error, false, error.message)
+
   }
 }))
 
 // GOOGLE Strategy
 passport.use('google-token', new GooglePlusTokenStrategy({
+
   clientID: config.oauth.google.clientID,
   clientSecret: config.oauth.google.clientSecret
-}, async (acccessToken, refreshToken, profile, done) =>{
-  // console.log(acccessToken);
-  // console.log(refreshToken);
-  // console.log(profile);
 
-  // check if current user exists in db
+}, async (accessToken, refreshToken, profile, done) =>{
+
   const existingUser = await User.findOne({'google.id': profile.id})
+
   if(existingUser){
-    console.log('user already exists in DB');
     return done(null, existingUser)
   }
 
-  console.log('user does not exists, but we\'ll create it!');
-  // if new account
   const newUser = new User({
     method: 'google',
     google: {
@@ -82,39 +110,49 @@ passport.use('google-token', new GooglePlusTokenStrategy({
       email: profile.emails[0].value
     }
   })
-  try{
-    await newUser.save()
-    done(null, newUser);
-  }catch(error){
-    done(error, error.message)
-  }
 
+  try{
+
+    await newUser.save()
+
+    done(null, newUser);
+
+  }catch(error){
+
+    done(error, error.message)
+
+  }
 }))
 
-//LOCAL Strategy
-passport.use(new LocalStrategy({
+// LOCAL STRATEGY
+passport.use('local', new LocalStrategy({
   usernameField: 'email',
-
 }, async (email, password, done) => {
+
   try {
 
-    // Find the user specified in token
-    const user = await User.findOne({ 'local.email' :email });
+    // check if user exists
+    const user = await User.findOne({ "local.email": email });
 
-    // If user doesn't exists, handle it
+    //  no user? out!
     if (!user) {
       return done(null, false);
     }
-    const isMatch = await user.isValidPassWord(password)
 
-    // No Matching Password?
-    if(!isMatch){
-      return done(null, false)
+    // Check if the password is correct
+    const isMatch = await user.isValidPassword(password);
+
+    // If not, you can leave.
+    if (!isMatch) {
+      return done(null, false);
     }
 
-    done(null, user)
+    // Otherwise, return the user
+    done(null, user);
 
-  }catch(error){
-    done(error, false)
+  } catch(error) {
+
+    done(error, false);
+
   }
 }));

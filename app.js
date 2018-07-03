@@ -1,42 +1,53 @@
 require('dotenv').config();
 const express = require('express')
+const cors = require('cors')
 const morgan = require('morgan')
 const bodyParser = require('body-parser')
-
-//database and connection
 const mongoose = require('mongoose')
-// mongoose.Promise = global.Promise;
-// mongoose.connect('mongodb://localhost/APIAuthentication');
+const config = require('./configuration')
+//ridiculous looking variable for database URL
+const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
+
 mongoose.Promise = global.Promise;
-if (process.env.NODE_ENV === 'test') {
-  mongoose.connect('mongodb://localhost/APIAuthenticationTEST');
-} else {
+
+
+//incase we're testing
+if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) {
+  // var environment = process.env.NODE_ENV
+  console.log('mongodb://localhost/APIAuthentication');
   mongoose.connect('mongodb://localhost/APIAuthentication');
+
+} else {
+  console.log('mongodb://localhost/APIAuthentication', 2);
+  mongoose.connect(process.env.MONGOLAB_MAROON_URI || dbURL);
 }
 
 
 // Middlewares moved morgan into if for clear tests
 if (!process.env.NODE_ENV === 'test') {
+
   app.use(morgan('dev'));
+
 }
-
-
-//require route files
-const Users = require('./routes/users.js')
 
 //creates express app
 const app = express()
-
-
-// middleware, ran in squence
-app.use(morgan('dev'))
-
+app.use(cors())
 app.use(bodyParser.json())
 
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "X-Requested-With");
+  next();
+});
 
 // routes
-// http://localhost:3000/users... require >> /signup || /login
-app.use('/users', Users)
+app.use('/users', require('./routes/users.js'))
+app.use('/posts', require('./routes/posts.js'))
 
 
 module.exports = app
+// module.exports = {
+//   app,
+//   environment
+// }
