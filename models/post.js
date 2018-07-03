@@ -19,6 +19,9 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
+  user_id: {
+    type: String
+  },
   level:{
     type: String
   }

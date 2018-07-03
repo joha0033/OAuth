@@ -51,7 +51,6 @@ module.exports ={
   getAll: async (req, res, next) => {
 
     let posts = await Post.find({})
-    console.log(posts)
     res.send(posts)
 
   }

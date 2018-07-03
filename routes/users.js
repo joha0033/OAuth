@@ -11,6 +11,8 @@ const UsersController = require('../controllers/users_controller');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
+router.route('/seed').get(UsersController.seed)
+
 router.route('/getall')
   .get(UsersController.getAll);
 

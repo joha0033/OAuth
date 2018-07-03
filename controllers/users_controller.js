@@ -2,7 +2,9 @@
 
 const JWT = require('jsonwebtoken')
 const User = require('../models/user')
+const Post = require('../models/post')
 const { Jwt_Secret } = require('../configuration')
+const { users } = require('./user_seeds')
 
 //generate Token
 const signToken = (user) => {
@@ -20,21 +22,39 @@ const signToken = (user) => {
 }
 
 module.exports = {
+  seed: async (req, res, next) => {
+    
+    const seedUsers = (seeds) => {
+      seeds.map((user)=>{
+        let newUser = new User(user)
+        newUser.save();
+      })
+    }
+
+    return process.env.NODE_ENV !== 'production'  
+    ? ( User.remove({}).exec(), 
+        seedUsers(users), 
+        res.json({msg: 'Database cleared and seeded!'}))
+    : ( res.json({msg: 'Your environment is in Production, cannot kill & reseed'}) )
+   
+  },
   getAll: async (req, res, next) => {
     const users = await User.find({})
-    console.log(users);
+    // console.log(users);
     
     res.send(users)
   },
   getProfile: async (req, res, next) => {
     const token = signToken(req.user.userData)
     //I dont have a lot of secrets
-    console.log(req.user.userData);
+
+    let posts = await Post.find({"user_id": req.user.userData._id})
     
     res.json({
       token: token,
       payload: {
         profile: req.user.userData.local,
+        posts,
         _id: req.user._id
       }
     })
@@ -80,13 +100,12 @@ module.exports = {
 
   },
   signIn: async (req, res, next) => {
+
     const token = signToken(req.user)
-    console.log('secreT?!!?');
     const foundUser = await User.findOne({ "local.email" : req.user.local.email })
+  
     let { firstName, lastName, email } = foundUser.local;
     let id = foundUser._id
-    console.log(firstName, lastName, email, id, token);
-    
     
     firstName === undefined ? firstName = "First name N/A, please update profile information" : null
     lastName === undefined ? lastName = "Last name N/A, please update profile information" : null
@@ -100,9 +119,6 @@ module.exports = {
      })
   },
   secret: async (req, res, next) => {
-    //regenerate token for user?
-    
-    
     const token = signToken(req.user)
     //I dont have a lot of secrets
     res.json({

@@ -16,7 +16,6 @@ passport.use('jwt', new JwtStrategy({
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
   try {
-    console.log(payload.sub);
     
     // Find the user specified in token
     const foundUser = await User.findById(payload.sub);
@@ -128,12 +127,13 @@ passport.use('google-token', new GooglePlusTokenStrategy({
 passport.use('local', new LocalStrategy({
   usernameField: 'email',
 }, async (email, password, done) => {
-
+  // console.log(password);
+  
   try {
 
     // check if user exists
     const user = await User.findOne({ "local.email": email });
-
+    
     //  no user? out!
     if (!user) {
       return done(null, false);
@@ -141,7 +141,7 @@ passport.use('local', new LocalStrategy({
 
     // Check if the password is correct
     const isMatch = await user.isValidPassword(password);
-
+    
     // If not, you can leave.
     if (!isMatch) {
       return done(null, false);
