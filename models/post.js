@@ -7,6 +7,10 @@ const PostSchema = new Schema({
     type: String,
     required: true
   },
+  date: { 
+    type: Date, 
+    default: Date.now 
+  },
   content:{
     type: String,
     required: true
@@ -18,7 +22,6 @@ const PostSchema = new Schema({
   level:{
     type: String
   }
-
 })
 
  // create model

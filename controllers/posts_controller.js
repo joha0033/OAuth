@@ -1,7 +1,23 @@
 const Post = require('../models/post')
+const {posts} = require('./post_seeds')
+
 
 module.exports ={
+  seed: async (req, res, next) => {
+    const seedPosts = (seeds) => {
+      seeds.map((post)=>{
+        let newPost = new Post(post)
+        newPost.save();
+      })
+    }
 
+    return process.env.NODE_ENV !== 'production'  
+    ? ( Post.remove({}).exec(), 
+      seedPosts(posts), 
+        res.json({msg: 'Database cleared and seeded!'})) 
+    : ( res.json({msg: 'Your environment is in Production, cannot kill & reseed'}) )
+   
+  },
   create: async (req, res, next) => {
     console.log('req.body',req.body);
     
@@ -35,8 +51,8 @@ module.exports ={
   getAll: async (req, res, next) => {
 
     let posts = await Post.find({})
-    //manipulate data here if needed
+    console.log(posts)
     res.send(posts)
 
-}
+  }
 }

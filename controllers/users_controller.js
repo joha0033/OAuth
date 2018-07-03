@@ -6,7 +6,7 @@ const { Jwt_Secret } = require('../configuration')
 
 //generate Token
 const signToken = (user) => {
-  let {firstName, lastName, email } = user.userData.local
+  let {firstName, lastName, email } = user.local
   // respond with token
   return JWT.sign({
     iss: 'austin',
@@ -20,16 +20,21 @@ const signToken = (user) => {
 }
 
 module.exports = {
-
-  getProfile: async (req, res, next) => {
-    //regenerate token for user?
+  getAll: async (req, res, next) => {
+    const users = await User.find({})
+    console.log(users);
     
-    const token = signToken(req.user)
+    res.send(users)
+  },
+  getProfile: async (req, res, next) => {
+    const token = signToken(req.user.userData)
     //I dont have a lot of secrets
+    console.log(req.user.userData);
+    
     res.json({
       token: token,
       payload: {
-        ...req.user.userData.local,
+        profile: req.user.userData.local,
         _id: req.user._id
       }
     })
@@ -76,12 +81,12 @@ module.exports = {
   },
   signIn: async (req, res, next) => {
     const token = signToken(req.user)
-    
+    console.log('secreT?!!?');
     const foundUser = await User.findOne({ "local.email" : req.user.local.email })
     let { firstName, lastName, email } = foundUser.local;
     let id = foundUser._id
-
-    console.log(foundUser._id);
+    console.log(firstName, lastName, email, id, token);
+    
     
     firstName === undefined ? firstName = "First name N/A, please update profile information" : null
     lastName === undefined ? lastName = "Last name N/A, please update profile information" : null
@@ -96,6 +101,7 @@ module.exports = {
   },
   secret: async (req, res, next) => {
     //regenerate token for user?
+    
     
     const token = signToken(req.user)
     //I dont have a lot of secrets

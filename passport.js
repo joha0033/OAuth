@@ -16,13 +16,14 @@ passport.use('jwt', new JwtStrategy({
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
   try {
+    console.log(payload.sub);
     
     // Find the user specified in token
-    const user = await User.findById(payload.sub);
+    const foundUser = await User.findById(payload.sub);
     
     // ready the cargo captain!
-    let userAddToken = {
-      userData: user,
+    let user = {
+      userData: foundUser,
       _id: payload.sub
     }
 
@@ -30,9 +31,8 @@ passport.use('jwt', new JwtStrategy({
     if (!user) {
       return done(null, false);
     }
-
     // Otherwise, return the user
-    done(null, userAddToken);
+    done(null, user);
 
   } catch(error) {
 

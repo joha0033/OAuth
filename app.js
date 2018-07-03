@@ -10,16 +10,16 @@ const dbURL = 'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CR
 
 mongoose.Promise = global.Promise;
 
+
 //incase we're testing
 if (process.env.NODE_ENV === 'test' || process.env.NODE_ENV === 'development' ) {
-
+  // var environment = process.env.NODE_ENV
   console.log('mongodb://localhost/APIAuthentication');
   mongoose.connect('mongodb://localhost/APIAuthentication');
 
 } else {
-  //when we're not testing
+  console.log('mongodb://localhost/APIAuthentication', 2);
   mongoose.connect(process.env.MONGOLAB_MAROON_URI || dbURL);
-
 }
 
 
@@ -47,3 +47,7 @@ app.use('/posts', require('./routes/posts.js'))
 
 
 module.exports = app
+// module.exports = {
+//   app,
+//   environment
+// }

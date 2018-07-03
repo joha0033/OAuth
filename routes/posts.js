@@ -11,6 +11,8 @@ router.route('/create').post(validateBody(schemas.postSchema), PostsController.c
 
 router.route('/getall').get(PostsController.getAll)
 
+router.route('/seed').get(PostsController.seed)
+
 
 
 module.exports = router
