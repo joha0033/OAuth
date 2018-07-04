@@ -11,20 +11,28 @@ const PostSchema = new Schema({
     type: Date, 
     default: Date.now 
   },
-  content:{
+  content: {
     type: String,
     required: true
   },
-  category:{
+  category: {
     type: String,
     required: true
   },
-  user_id: {
+  user_id: { 
+    type: Schema.Types.ObjectId, ref: 'user' 
+  },
+  level: {
     type: String
   },
-  level:{
-    type: String
-  }
+  upvotes: {
+    type: Number
+  },
+  downvotes: {
+    type: Number
+  },
+  comments: [{ type: Schema.Types.ObjectId, ref: 'comment' }]
+  
 })
 
  // create model

@@ -7,8 +7,12 @@ const { Jwt_Secret } = require('../configuration')
 const { users } = require('./user_seeds')
 
 //generate Token
-const signToken = (user) => {
-  let {firstName, lastName, email } = user.local
+const signToken = async (user) => {
+  console.log(typeof user);
+  let userFound = User.find({_id : user})
+  console.log( await userFound.exec());
+  
+  let {firstName, lastName, email } = user.local || 'N/A'
   // respond with token
   return JWT.sign({
     iss: 'austin',
@@ -45,10 +49,12 @@ module.exports = {
     res.send(users)
   },
   getProfile: async (req, res, next) => {
-    const token = signToken(req.user.userData)
+    // console.log(req.user._id);
+    
+    const token = signToken(req.user._id)
     //I dont have a lot of secrets
 
-    let posts = await Post.find({"user_id": req.user.userData._id})
+    let posts = await Post.find({"user_id": req.user._id})
     
     res.json({
       token: token,

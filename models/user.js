@@ -1,16 +1,21 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
-
+const shortId = require('shortId')
 // shorten user ID some how...
  // create schema - describe the user
+ console.log(shortId.generate())
 const UserSchema = new Schema({
   method: {
     type: String,
     enum: ['local', 'google', 'facebook'],
     required: true
   },
-
+  shortId: {
+    type: String, 
+    // unique: true, 
+    default: shortId.generate()
+  },
   google:{
     id:{
       type: String,
@@ -37,6 +42,9 @@ const UserSchema = new Schema({
     },
     accessToken:{
       type: String,
+    },
+    posts: {
+      type: Schema.Types.ObjectId, ref: 'post'
     }
   },
 
@@ -55,6 +63,9 @@ const UserSchema = new Schema({
     },
     password: {
       type: String,
+    },
+    posts: {
+      type: Schema.Types.ObjectId, ref: 'post'
     }
 
   }

@@ -4,7 +4,10 @@ const posts = [
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
-        "user_id": "5b3bd569a98e3652a8812dad",
+        "comments": ['5b3cdef482248614cb3090b3', '5b3cdef482248614cb3090b4', '5b3cdef482248614cb3090b5'],
+        "upvotes": 5,
+        "downvotes": 1,
+        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
@@ -12,6 +15,7 @@ const posts = [
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
+        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
@@ -19,6 +23,7 @@ const posts = [
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
+        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
@@ -26,6 +31,7 @@ const posts = [
         "content": "coming soon",
         "category": "Github",
         "level": "Intermediate",
+        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
@@ -40,7 +46,10 @@ const posts = [
         "content": "coming soon",
         "category": "Command Line",
         "level": "Beginner",
-        "user_id": "5b3bd569a98e3652a8812dad",
+        "user_id": "5b3cf6a69b02741eb6621450",
+        "comments": ['5b3cdef482248614cb3090b5', '5b3cdef482248614cb3090b3', '5b3cdef482248614cb3090b4'],
+        "upvotes": 2,
+        "downvotes": 1,
         "__v": 0
     },
     {
@@ -89,8 +98,10 @@ const posts = [
         "title": "Text Intro",
         "content": "coming soon",
         "category": "Text Editor",
-        "user_id": "5b3bd569a98e3652a8812dad",
+        "user_id": "5b3cf6a69b02741eb6621451",
         "level": "Beginner",
+        "upvotes": 2,
+        "downvotes": 6,
         "__v": 0
     },
     {
