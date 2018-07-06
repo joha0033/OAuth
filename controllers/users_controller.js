@@ -8,10 +8,8 @@ const { users } = require('./user_seeds')
 
 //generate Token
 const signToken = async (user) => {
-  console.log('------------',user);
   
   let userFound = await User.find({_id: user})
-  console.log('b',userFound)
   
   let {firstName, lastName, email } = userFound.local || 'N/A'
   // respond with token
@@ -54,7 +52,6 @@ module.exports = {
 
     let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
     let payload = await User.findById(req.user._id)
-    console.log('payload', payload);
     
     
     res.json({
@@ -74,6 +71,34 @@ module.exports = {
       posts
     })
     
+  },
+  getOnePost: async (req, res, next) => {
+    let postId = req.params.postId
+   
+    let post = await Post.findById(postId).populate('comments').exec()
+
+    res.json({
+      post
+    })
+    
+  },
+  updateOnePost: async (req, res, next) => {
+    let postId = req.params.postId
+    console.log('postId',postId);
+    let changes = JSON.stringify(req.body)
+    console.log((changes));
+    
+    // get post
+    // update post
+    // save post
+    // get updated post?
+    
+    let post = await Post.findOneAndUpdate({"_id": postId}, changes).exec()
+
+
+    res.json({
+      post
+    })
   },
   signUp: async (req, res, next) => {
     // save data
