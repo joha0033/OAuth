@@ -45,8 +45,6 @@ module.exports = {
   },
   getAll: async (req, res, next) => {
     const users = await User.find({})
-    // 
-    
     res.send(users)
   },
   getProfile: async (req, res, next) => {
@@ -67,6 +65,15 @@ module.exports = {
         _id: req.user._id
       }
     })
+  },
+  getUsersPost: async (req, res, next) => {
+    let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
+    console.log(posts);
+
+    res.json({
+      posts
+    })
+    
   },
   signUp: async (req, res, next) => {
     // save data
