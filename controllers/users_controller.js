@@ -8,18 +8,19 @@ const { users } = require('./user_seeds')
 
 //generate Token
 const signToken = async (user) => {
-  console.log(typeof user);
-  let userFound = User.find({_id : user})
-  console.log( await userFound.exec());
+  console.log('------------',user);
   
-  let {firstName, lastName, email } = user.local || 'N/A'
+  let userFound = await User.find({_id: user})
+  console.log('b',userFound)
+  
+  let {firstName, lastName, email } = userFound.local || 'N/A'
   // respond with token
   return JWT.sign({
     iss: 'austin',
     firstName,
     lastName,
     email,
-    sub: user._id,
+    sub: userFound._id,
     iat: new Date().getTime(),
     exp: new Date().setDate(new Date().getDate() + 1 )
   }, Jwt_Secret)
@@ -44,17 +45,19 @@ module.exports = {
   },
   getAll: async (req, res, next) => {
     const users = await User.find({})
-    // console.log(users);
+    // 
     
     res.send(users)
   },
   getProfile: async (req, res, next) => {
-    // console.log(req.user._id);
     
-    const token = signToken(req.user._id)
+    const token = await signToken(req.user._id)
     //I dont have a lot of secrets
 
-    let posts = await Post.find({"user_id": req.user._id})
+    let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
+    let payload = await User.findById(req.user._id)
+    console.log('payload', payload);
+    
     
     res.json({
       token: token,
@@ -107,7 +110,10 @@ module.exports = {
   },
   signIn: async (req, res, next) => {
 
-    const token = signToken(req.user)
+    const token = await signToken(req.user)
+
+    console.log('114', token);
+    
     const foundUser = await User.findOne({ "local.email" : req.user.local.email })
   
     let { firstName, lastName, email } = foundUser.local;
@@ -149,7 +155,7 @@ module.exports = {
   // FAKE ROUTE ?? MOVE TO TESTS //
   /////////////////////////////////
   FAKEfacebookOAuth: async (req, res, next) => {
-    console.log(req.body);
+    
     // save data
     const { email, password } = req.body
     // delete email if it already exists in DB
@@ -158,7 +164,7 @@ module.exports = {
 
     //if the user exists, send status and err message
     if(foundUser){
-      console.log('email already exists')
+      
       return res.status(403).json({error: 'email already exists'})
     }
 
