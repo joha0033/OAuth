@@ -1,44 +1,26 @@
 const Post = require('../models/post')
 const Comment = require('../models/comment')
 const { posts } = require('./post_seeds')
-const {comments} = require('./comment_seeds')
+const { comments } = require('./comment_seeds')
 
 
 
 module.exports ={
-  seedPosts: async (req, res, next) => {
+  seed: async (req, res, next) => {
     const seedPosts = (seeds) => {
+      
       seeds.map((post)=>{
         let newPost = new Post(post)
+        console.log(newPost);
+        
         newPost.save();
-      })
-    }
-    const seedComments = (seeds) => {
-      seeds.map((comment)=>{
-        let newComment = new Comment(comment)
-        newComment.save();
       })
     }
 
     return process.env.NODE_ENV !== 'production'  
     ? ( Post.remove({}).exec(), 
-        seedPosts(posts), seedComments(comments),
+        seedPosts(posts),
         res.json({msg: 'Database cleared and seeded posts!'}))
-    : ( res.json({msg: 'Your environment is in Production, cannot kill & reseed'}) )
-   
-  },
-  seedComments: async (req, res, next) => {
-    const seedComments = (seeds) => {
-      seeds.map((comment)=>{
-        
-        let newComment = new Comment(comment)
-        newComment.save();
-      })
-    }
-
-    return process.env.NODE_ENV !== 'production'  
-    ? ( Comment.remove({}).exec(), seedComments(comments),
-        res.json({msg: 'Database cleared and seeded comments!'}))
     : ( res.json({msg: 'Your environment is in Production, cannot kill & reseed'}) )
    
   },

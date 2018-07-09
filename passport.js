@@ -16,10 +16,11 @@ passport.use('jwt', new JwtStrategy({
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
   try {
+    console.log('payload', payload);
     
     // Find the user specified in token
     const foundUser = await User.findById(payload.sub);
-    
+    console.log('foundUser', foundUser);
     // ready the cargo captain!
     let user = {
       userData: foundUser,
@@ -30,6 +31,8 @@ passport.use('jwt', new JwtStrategy({
     if (!user) {
       return done(null, false);
     }
+    
+    
     // Otherwise, return the user
     done(null, user);
 
@@ -46,14 +49,14 @@ passport.use('facebook-token', new FacebookTokenStrategy({
   clientSecret: config.oauth.facebook.clientSecret
 }, async (accessToken, refreshToken, profile, done) => {
   
-  console.log(accessToken, refreshToken, profile);
+  // console.log(accessToken, refreshToken, profile);
   
   try{
 
     //check if user has FB creds in db
     const existingUser = await User.findOne({'facebook.id': profile.id})
-    console.log('existingUser',existingUser);
-    console.log('profile', profile);
+    // console.log('existingUser',existingUser);
+    // console.log('profile', profile);
     
     
     // if so, leave.
@@ -72,7 +75,7 @@ passport.use('facebook-token', new FacebookTokenStrategy({
       }
     })
 
-    console.log('newUser', newUser);
+    // console.log('newUser', newUser);
     
 
     // saving user to db
@@ -127,10 +130,10 @@ passport.use('google-token', new GooglePlusTokenStrategy({
 passport.use('local', new LocalStrategy({
   usernameField: 'email',
 }, async (email, password, done) => {
-  // console.log(password);
   
   try {
-
+    // console.log(email, password);
+    
     // check if user exists
     const user = await User.findOne({ "local.email": email });
     
@@ -146,7 +149,7 @@ passport.use('local', new LocalStrategy({
     if (!isMatch) {
       return done(null, false);
     }
-
+    
     // Otherwise, return the user
     done(null, user);
 

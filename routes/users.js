@@ -31,6 +31,18 @@ router.route('/oauth/google')
 router.route('/profile/:id')
   .get(passportJWT, UsersController.getProfile)
 
+router.route('/profile/:id/posts')
+  .get(passportJWT, UsersController.getUsersPost)
+
+router.route('/profile/:id/posts/:postId')
+  .get(UsersController.getOnePost)
+
+router.route('/profile/:id/posts/:postId/edit')
+  .put(UsersController.updateOnePost)
+
+router.route('/profile/:id/posts/:postId/delete')
+  .delete(UsersController.deleteOnePost)
+
 
 
 /////////////////////

@@ -1,8 +1,8 @@
 const users = [
     {
         "local": {
-            "firstName": "taylor",
-            "lastName": "swifty",
+            "firstName": "test",
+            "lastName": "local",
             "email": "testlocal@gmail.com",
             "password": "test321"
         },

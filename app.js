@@ -44,10 +44,8 @@ app.all('/*', function(req, res, next) {
 // routes
 app.use('/users', require('./routes/users.js'))
 app.use('/posts', require('./routes/posts.js'))
+app.use('/comments', require('./routes/comments.js'))
 
 
 module.exports = app
-// module.exports = {
-//   app,
-//   environment
-// }
+

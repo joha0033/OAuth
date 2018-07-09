@@ -8,8 +8,10 @@ const { users } = require('./user_seeds')
 
 //generate Token
 const signToken = async (user) => {
+  console.log('user', user);
   
   let userFound = await User.find({_id: user})
+  console.log('userFound', userFound);
   
   let {firstName, lastName, email } = userFound.local || 'N/A'
   // respond with token
@@ -46,22 +48,21 @@ module.exports = {
     res.send(users)
   },
   getProfile: async (req, res, next) => {
+    console.log('req.params', req.params);
     
-    const token = await signToken(req.user._id)
-    //I dont have a lot of secrets
-
+    const token = await signToken(req.body._id)
+    // console.log('token',token);
+    
     let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
-    let payload = await User.findById(req.user._id)
-    
-    
-    res.json({
-      token: token,
-      payload: {
-        profile: req.user.userData.local,
-        posts,
-        _id: req.user._id
-      }
+    let payload = await User.findById(req.params.id).populate('posts').exec(()=>{
+      console.log(payload);
+      res.json({
+        token,
+        payload
+        })
     })
+    
+    
   },
   getUsersPost: async (req, res, next) => {
     let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
@@ -84,14 +85,7 @@ module.exports = {
   },
   updateOnePost: async (req, res, next) => {
     let postId = req.params.postId
-    console.log('postId',postId);
     let changes = JSON.stringify(req.body)
-    console.log((changes));
-    
-    // get post
-    // update post
-    // save post
-    // get updated post?
     
     let post = await Post.findOneAndUpdate({"_id": postId}, changes).exec()
 
@@ -99,6 +93,14 @@ module.exports = {
     res.json({
       post
     })
+  },
+  deleteOnePost: async (req, res, next) =>{
+    let deletedPost =   await Post.findOneAndRemove(req.params.postId).exec()
+    console.log(deletedPost);
+    res.json({
+      msg: "deleted"
+    })
+    
   },
   signUp: async (req, res, next) => {
     // save data
@@ -120,10 +122,10 @@ module.exports = {
     const newUser = new User({
       method: 'local',
       local: {
-        firstName: firstName,
-        lastName: lastName,
-        email: email,
-        password: password
+        firstName,
+        lastName,
+        email,
+        password
       }
     })
   
@@ -143,8 +145,6 @@ module.exports = {
   signIn: async (req, res, next) => {
 
     const token = await signToken(req.user)
-
-    console.log('114', token);
     
     const foundUser = await User.findOne({ "local.email" : req.user.local.email })
   
@@ -164,7 +164,6 @@ module.exports = {
   },
   secret: async (req, res, next) => {
     const token = signToken(req.user)
-    //I dont have a lot of secrets
     res.json({
       token: token,
       _id: req.user._id,
@@ -172,13 +171,11 @@ module.exports = {
     })
   },
   googleOAuth: async (req, res, next) => {
-    // create token and lets go!
     const token = signToken(req.user)
     res.status(200).json({ token })
   },
 
   facebookOAuth: async (req, res, next) =>{
-    // create token and lets go!
     const token = signToken(req.user)
     res.status(201).json({ token })
   },

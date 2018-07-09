@@ -7,12 +7,12 @@ const PostsController = require('../controllers/posts_controller');
 
 
 
-router.route('/create').post(validateBody(schemas.postSchema), PostsController.create)
+router.route('/create').post(PostsController.create)
 
 router.route('/getall').get(PostsController.getAll)
 
-router.route('/seedPosts').get(PostsController.seedPosts)
-router.route('/seedComments').get(PostsController.seedComments)
+router.route('/seed').get(PostsController.seed)
+
 
 
 

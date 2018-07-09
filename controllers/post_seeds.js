@@ -1,41 +1,42 @@
 const posts = [
     {
         "title": "Github Basics",
+        "user_id": "5b43b25044e210cc34e8ab0a",
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
-        "comments": ['5b3cdef482248614cb3090b3', '5b3cdef482248614cb3090b4', '5b3cdef482248614cb3090b5'],
+        "comments": ['5b43b3dc55e650ccfd1eb722', '5b43b3dc55e650ccfd1eb723', '5b43b3dc55e650ccfd1eb724'],
         "upvotes": 5,
         "downvotes": 1,
-        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
         "title": "Github Introduction",
+        "user_id": "5b43b25044e210cc34e8ab0a",
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
-        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
         "title": "Github Add/Commit/Push",
+        "user_id": "5b43b25044e210cc34e8ab0a",
         "content": "coming soon",
         "category": "Github",
         "level": "Beginner",
-        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
         "title": "Github Roll-back/Merge Branches",
+        "user_id": "5b43b25044e210cc34e8ab0a",
         "content": "coming soon",
         "category": "Github",
         "level": "Intermediate",
-        "user_id": "5b3cf6a69b02741eb662144f",
         "__v": 0
     },
     {
         "title": "CLI Intro",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Beginner",
@@ -43,17 +44,18 @@ const posts = [
     },
     {
         "title": "CLI Basics",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Beginner",
-        "user_id": "5b3cf6a69b02741eb6621450",
-        "comments": ['5b3cdef482248614cb3090b5', '5b3cdef482248614cb3090b3', '5b3cdef482248614cb3090b4'],
+        "comments": ['5b43b3dc55e650ccfd1eb722', '5b43b3dc55e650ccfd1eb723', '5b43b3dc55e650ccfd1eb724'],
         "upvotes": 2,
         "downvotes": 1,
         "__v": 0
     },
     {
         "title": "CLI Creating Directories",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Beginner",
@@ -61,6 +63,7 @@ const posts = [
     },
     {
         "title": "CLI Creating and writing to files",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Intermediate",
@@ -68,6 +71,7 @@ const posts = [
     },
     {
         "title": "CLI and NPM",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Intermediate",
@@ -75,6 +79,7 @@ const posts = [
     },
     {
         "title": "CLI Opening Files/Applications",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Intermediate",
@@ -82,6 +87,7 @@ const posts = [
     },
     {
         "title": "CLI and VIM",
+        "user_id": "5b43b25044e210cc34e8ab0b",
         "content": "coming soon",
         "category": "Command Line",
         "level": "Advanced",
@@ -89,6 +95,7 @@ const posts = [
     },
     {
         "title": "Text Editor options",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
         "level": "Beginner",
@@ -96,9 +103,9 @@ const posts = [
     },
     {
         "title": "Text Intro",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
-        "user_id": "5b3cf6a69b02741eb6621451",
         "level": "Beginner",
         "upvotes": 2,
         "downvotes": 6,
@@ -106,6 +113,7 @@ const posts = [
     },
     {
         "title": "Text Editor Intro",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
         "level": "Beginner",
@@ -113,6 +121,7 @@ const posts = [
     },
     {
         "title": "Text Editor Customization",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
         "level": "Intermediate",
@@ -120,6 +129,7 @@ const posts = [
     },
     {
         "title": "Text Editor Linting",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
         "level": "Advanced",
@@ -127,6 +137,7 @@ const posts = [
     },
     {
         "title": "Text Editor opening files from CLI",
+        "user_id": "5b43b25044e210cc34e8ab0e",
         "content": "coming soon",
         "category": "Text Editor",
         "level": "Intermediate",
