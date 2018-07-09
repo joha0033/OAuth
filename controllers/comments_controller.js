@@ -1,5 +1,5 @@
 const Comment = require('../models/comment')
-const comments = require('./comment_seeds')
+const comments = require('./seeds/comment_seeds')
 
 module.exports = {
     getAll: async (req, res, next) => {

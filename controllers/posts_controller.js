@@ -1,7 +1,7 @@
 const Post = require('../models/post')
 const Comment = require('../models/comment')
-const { posts } = require('./post_seeds')
-const { comments } = require('./comment_seeds')
+const { posts } = require('./seeds/post_seeds')
+const { comments } = require('./seeds/comment_seeds')
 
 
 

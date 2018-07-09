@@ -4,7 +4,7 @@ const JWT = require('jsonwebtoken')
 const User = require('../models/user')
 const Post = require('../models/post')
 const { Jwt_Secret } = require('../configuration')
-const { users } = require('./user_seeds')
+const { users } = require('./seeds/user_seeds')
 
 //generate Token
 const signToken = async (user) => {
