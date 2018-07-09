@@ -3,6 +3,10 @@ const Schema = mongoose.Schema
 
  // create schema - describe the post
 const PostSchema = new Schema({
+  user_id: {
+    type: String,
+    required: true
+  },
   title: {
     type: String,
     required: true

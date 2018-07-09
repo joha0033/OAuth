@@ -11,7 +11,6 @@ const signToken = async (user) => {
   console.log('user', user);
   
   let userFound = await User.find({_id: user})
-  console.log('userFound', userFound);
   
   let {firstName, lastName, email } = userFound.local || 'N/A'
   // respond with token
@@ -48,19 +47,20 @@ module.exports = {
     res.send(users)
   },
   getProfile: async (req, res, next) => {
-    console.log('req.params', req.params);
     
-    const token = await signToken(req.body._id)
-    // console.log('token',token);
+    const token = await signToken(req.params.id)
     
-    let posts = await Post.find({"user_id": req.user._id}).populate('comments').exec()
-    let payload = await User.findById(req.params.id).populate('posts').exec(()=>{
-      console.log(payload);
-      res.json({
-        token,
-        payload
-        })
-    })
+    let posts = await Post.find({"user_id": req.params.id}).populate({path: "comments", populate: {path: "user_id"}})
+    
+    console.log(posts);
+    
+    let payload = await User.findById(req.params.id)
+
+    res.json({
+      token,
+      payload,
+      posts
+      })
     
     
   },
