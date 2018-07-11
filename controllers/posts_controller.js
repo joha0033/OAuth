@@ -22,19 +22,12 @@ module.exports ={
         seedPosts(posts),
         res.json({msg: 'Database cleared and seeded posts!'}))
     : ( res.json({msg: 'Your environment is in Production, cannot kill & reseed'}) )
-   
   },
-  create: async (req, res, next) => {
-    console.log('req.body',req.body);
-    
+  create: async (req, res, next) => {    
     const { title, content, category, level } = req.body
-
-    console.log('title, content',title, content);
-
     let titleTaken = await Post.findOne({ title  })
-    console.log('titleTaken', titleTaken);
 
-    if(titleTaken){
+    if (titleTaken){
       return res.status(403).json({error: 'title is taken...'})
     }
 
@@ -45,21 +38,13 @@ module.exports ={
       level
     })
 
-    console.log('newPost', newPost);
-
     await newPost.save()
 
     res.status(200).json({
       got:  req.body
     })
   },
-
   getAll: async (req, res, next) => {
-
-  //  await Comment.find({}).populate('user_id').exec((err, comments) => {
-  //   console.log(comments)
-  //  })
-    
     await Post.find({})
       .populate({
         path: 'comments', 
@@ -71,10 +56,5 @@ module.exports ={
       .exec((err, posts) => {
       res.send(posts)
     })
-
- 
-
-    
-
   }
 }

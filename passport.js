@@ -15,31 +15,15 @@ passport.use('jwt', new JwtStrategy({
   jwtFromRequest: ExtractJwt.fromHeader('authorization'),
   secretOrKey: config.Jwt_Secret
 }, async (payload, done) => {
+  console.log('payload', payload);
+  
   try {
-    console.log('payload', payload);
+    payload = { ...payload, found: await User.findOne({"username": payload.username})}
+    console.log('the! payload', payload);
     
-    // Find the user specified in token
-    const foundUser = await User.findById(payload.sub);
-    console.log('foundUser', foundUser);
-    // ready the cargo captain!
-    let user = {
-      userData: foundUser,
-      _id: payload.sub
-    }
-
-    // If user doesn't exists, handle it and get out.
-    if (!user) {
-      return done(null, false);
-    }
-    
-    
-    // Otherwise, return the user
-    done(null, user);
-
+    done(null, payload);
   } catch(error) {
-
     done(error, false);
-
   }
 }));
 
@@ -130,6 +114,7 @@ passport.use('google-token', new GooglePlusTokenStrategy({
 passport.use('local', new LocalStrategy({
   usernameField: 'email',
 }, async (email, password, done) => {
+  // console.log(email, password);
   
   try {
     // console.log(email, password);
@@ -137,14 +122,16 @@ passport.use('local', new LocalStrategy({
     // check if user exists
     const user = await User.findOne({ "local.email": email });
     
+    
     //  no user? out!
     if (!user) {
       return done(null, false);
     }
-
+    console.log('password', password);
+    
     // Check if the password is correct
     const isMatch = await user.isValidPassword(password);
-    
+    console.log(isMatch);
     // If not, you can leave.
     if (!isMatch) {
       return done(null, false);

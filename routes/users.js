@@ -11,7 +11,7 @@ const UsersController = require('../controllers/users_controller');
 const passportSignIn = passport.authenticate('local', { session: false });
 const passportJWT = passport.authenticate('jwt', { session: false });
 
-router.route('/seed').get(UsersController.seed)
+router.route('/seed').get(validateBody(schemas.registerSchema),UsersController.seed)
 
 router.route('/getall')
   .get(UsersController.getAll);
@@ -28,19 +28,25 @@ router.route('/signin')
 router.route('/oauth/google')
   .post(passport.authenticate('google-token', { session: false }), UsersController.googleOAuth);
 
-router.route('/profile/:id')
+router.route('/profile/')
   .get(passportJWT, UsersController.getProfile)
 
-router.route('/profile/:id/posts')
+router.route('/updateUsernames/')
+  .get(UsersController.addUsernames)
+
+router.route('/profile/:username/edit')
+  .put(passportJWT, UsersController.editProfile)
+
+router.route('/profile/:username/posts')
   .get(passportJWT, UsersController.getUsersPost)
 
-router.route('/profile/:id/posts/:postId')
+router.route('/profile/:username/posts/:postId')
   .get(UsersController.getOnePost)
 
-router.route('/profile/:id/posts/:postId/edit')
+router.route('/profile/:username/posts/:postId/edit')
   .put(UsersController.updateOnePost)
 
-router.route('/profile/:id/posts/:postId/delete')
+router.route('/profile/:username/posts/:postId/delete')
   .delete(UsersController.deleteOnePost)
 
 

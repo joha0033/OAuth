@@ -2,9 +2,7 @@ const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
 const shortId = require('shortId')
-// shorten user ID some how...
  // create schema - describe the user
- console.log(shortId.generate())
 const UserSchema = new Schema({
   method: {
     type: String,
@@ -16,6 +14,11 @@ const UserSchema = new Schema({
     // unique: true, 
     default: shortId.generate()
   },
+  username:{
+    type: String,
+    required: true
+  },
+
   google:{
     id:{
       type: String,
@@ -102,7 +105,10 @@ UserSchema.pre('save', async function(next) {
 
 // lets compare hash passwords and see if they match!
 UserSchema.methods.isValidPassword = async function(newPassword) {
-
+  console.log(await bcrypt.hash(this.local.password, await bcrypt.genSalt(10)));
+  console.log(newPassword);
+  console.log(this.local.password);
+  
   try {
 
     //should return true or false.
