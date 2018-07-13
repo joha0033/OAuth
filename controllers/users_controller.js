@@ -1,16 +1,37 @@
 
 
-const mongoose = require('mongoose')
-const JWT = require('jsonwebtoken')
-const User = require('../models/user')
-const Post = require('../models/post')
-const { Jwt_Secret } = require('../configuration')
-const { users } = require('./seeds/user_seeds')
+const mongoose = 
+  require('mongoose')
 
-//generate Token
+const JWT = 
+  require('jsonwebtoken')
+
+const User = 
+  require('../models/user')
+
+const Post = 
+  require('../models/post')
+
+const Comment = 
+  require('../models/comment')
+
+const { Jwt_Secret } = 
+  require('../configuration')
+
+const { userSeeds } = 
+  require('./seeds/user_seeds')
+
+const { postSeeds } = 
+  require('./seeds/post_seeds')
+
+const { commentSeeds } = 
+  require('./seeds/comment_seeds')
+
+const async = 
+  require('async')
+;
+
 const signToken = async (username) => {
-  
-  // respond with token
   return JWT.sign({
     iss: 'austin',
     username,
@@ -20,61 +41,67 @@ const signToken = async (username) => {
 }
 
 module.exports = {
-  addUsernames: async (req, res, next) => {
-    let users = await User.find({})
-    // console.log(posts);
-    users.map(async (user)=>{
-      // console.log(user.local.email);
-      let userEmail =  await User.find({"local.email": user.local.email})
-      // console.log('userEmail', userEmail);
-      const username = userEmail[0].local.email.split(/[@]/)[0]
-      console.log('username', username);
-      let updatedUser = await User.update({"local.email": user.local.email}, {username})
-      console.log(updatedUser);
-    })
-    users = await User.find({})
-    res.json(users)
-  },
-  seed: async (req, res, next) => {
-    
-    const seedUsers = (seeds) => {
-      seeds.map((user)=>{
-        let newUser = new User(user)
-        newUser.save();
-      })
-    }
-
-    return process.env.NODE_ENV !== 'production'  
-    ? ( User.remove({}).exec(), 
-        seedUsers(users), 
-        res.json({msg: 'Database cleared and seeded!'}))
-    : ( res.json({msg: `Your environment is in ${process.env.NODE_ENV}, cannot kill & reseed`}))
-   
-  },
   getAll: async (req, res, next) => {
-    const users = await User.find({})
+    let users = await User.find({}) // all
+    let allUsersWithPosts = []
+    
+    users.map((user) => {
+      let user_id = user.id
+      Post.find({
+        user_id
+      }, (err, posts) => {
+        user = { 
+          ...user._doc, 
+          posts
+        }
+        allUsersWithPosts.push(user)
+      })
+    }) 
 
-    res.send(users)
+    //  eww... i had to.
+    setTimeout(() => {
+      res.json(allUsersWithPosts)
+    }, 200)
   },
   getProfile: async (req, res, next) => {
-    const token = await signToken(req.params.username)
-
+    let { username } = req.params
+    let user = await User
+      .findOne({
+       username
+      })
+    
+    let user_id = user._id
     let posts = await Post
-      .find({"user_id": req.params.id})
-      .populate({path: "comments", populate: {path: "user_id"}}).exec()
+      .find({
+       user_id
+      })
+      .populate({
+        path: 'comments', 
+        populate: {
+          path: 'user_id'
+        }
+      })
 
-    let userData = await User.findOne({"username":req.params.username}).exec()
-    let profile = { userData, posts}
-    
-    res.json({ profile })
-    
+    let usersProfile = { 
+      ...user._doc, 
+      posts
+    }
+
+    res.json(usersProfile)
   },
   editProfile: async (req, res, next) => {
-
-    const token = await signToken(req.params.username)
-
-    let userData = await User.findOneAndUpdate({"username": req.params.username}, {local: {...req.body}} ).exec()
-    console.log('userData', userData);
+    let { username } = req.params
+    let { password } = req.body
+    const token = await 
+      signToken(username)
+    
+    let userData = await User
+      .findOneAndUpdate({ 
+        username 
+      }, { //change
+        password, 
+        ...req.body 
+      }).exec()
 
     res.json({
       token,
@@ -84,8 +111,13 @@ module.exports = {
     
   },
   getUsersPost: async (req, res, next) => {
-    let posts = await Post.find({"username": req.user.username}).populate('comments').exec()
-    console.log(posts);
+    let { username } = req.user
+    let posts = await Post
+      .find({
+        username
+      })
+      .populate('comments')
+      .exec()
 
     res.json({
       posts
@@ -93,112 +125,127 @@ module.exports = {
     
   },
   getOnePost: async (req, res, next) => {
-    let postId = req.params.postId
-    let valid = mongoose.Types.ObjectId.isValid(postId)
+    let { postId } = req.params
+    let { isValid } = mongoose.Types.ObjectId
     let post;
-    valid ? (
-      post = await Post.findById(postId).populate('comments').exec(),
-      res.json({ post })) :
-    res.json({
-      msg: "sorry, the ID you're looking for doesn't seem to be valid"
-    })
 
+    isValid(postId) // 
+      ? post = await Post
+          .findById(postId)
+          .populate('comments')
+      : res.json({
+          msg: 'sorry, the ID you\'re using doesn\'t seem to be valid'
+        }) 
     
-    
-    
+    res.json({ 
+      post 
+    })
   },
   updateOnePost: async (req, res, next) => {
-    let postId = req.params.postId
+    let id = req.params.postId
     let changes = JSON.stringify(req.body)
-    
-    let post = await Post.findOneAndUpdate({"_id": postId}, changes).exec()
 
-
+    let post = await Post
+      .findByIdAndUpdate({
+          id
+        }, 
+        changes
+      )
 
     res.json({
       post
     })
   },
   deleteOnePost: async (req, res, next) =>{
-    let deletedPost =   await Post.findOneAndRemove(req.params.postId).exec()
-    console.log(deletedPost);
+    let deletedPost = await Post
+      .findOneAndRemove(
+        req.params.postId
+      )
+
     res.json({
-      msg: "deleted"
+      msg: 'deleted'
     })
-    
   },
   signUp: async (req, res, next) => {
-    // save data
-    
-    const { firstName, lastName, email, password } = req.body
-    const username = req.body.email.split(/[@]/)[0]
-    
+    const { 
+        firstName, 
+        lastName, 
+        email, 
+        password 
+      } = req.body
+    const username = req.body
+      .email.split(/[@]/)[0]
+    const updateMsg = 'N/A, please update profile information'
+
+    firstName === undefined 
+      ? firstName = updateMsg 
+      : null
+    lastName === undefined 
+      ? lastName = updateMsg 
+      : null
+  
     if(process.env.NODE_ENV === 'development'){
-      const deleteUser = await User.findOne({ "local.email" : email }).remove().exec()
+      await User
+        .findOne({ 
+          email 
+        })
+        .remove()
     }
 
-    // check if email already exists in DB
-    const foundUser = await User.findOne({ "local.email" : email })
+    const userExisits = await User
+      .findOne({ 
+        email 
+      })
 
-    //if the user exists, send status and err message
-    if(foundUser){
-      return res.status(403).json({error: 'email already exists'})
+    if(!!userExisits){
+      return res.status(403)
+        .json({
+          error: 'email already exists'
+        })
     }
     
-    // create a user object with imported schema
     const newUser = new User({
       method: 'local',
       username,
-      local: {
-        firstName,
-        lastName,
-        email,
-        password
-      }
+      firstName,
+      lastName,
+      email,
+      password,
     })
   
-    
-    // save user, hit them with a token!
     await newUser.save()
     
-    let userId = await User.find({"local.email": email}, "_id")
+    let userId = await User
+      .find({
+        email
+      }, 
+      "_id")
 
-    const token = await signToken(userId[0]._id)
-    console.log(newUser);
+    const token = await 
+      signToken(username)
     
-    
-    res.status(200).json({
-      token,
-      username: newUser.username,
-      firstName: newUser.local.firstName,
-      lastName: newUser.local.lastName
-     })
-
+    res.status(200).json({ 
+      ...newUser._doc, 
+      token 
+    })
   },
   signIn: async (req, res, next) => {
-    console.log('signin HIT?',req.user);
-    
-    const token = await signToken(req.user.username)
-    
-    const foundUser = await User.findOne({ "local.email" : req.user.local.email })
+    const { 
+      username,
+    } = req.user
+
+    const token = await 
+      signToken(username)
   
-    let { firstName, lastName, email } = foundUser.local;
-    let username = foundUser.username
-    
-    firstName === undefined ? firstName = "First name N/A, please update profile information" : null
-    lastName === undefined ? lastName = "Last name N/A, please update profile information" : null
-    
     res.status(200).json({
       username,
-      // firstName,
-      // lastName,
-      // email,
       token
      })
   },
   secret: async (req, res, next) => {
-    let userId = req.user.found._id;
-    const token = await signToken(userId)
+    let { username } = req.user.found
+    const token = await 
+      signToken(username)
     
     res.json({
       token: token,
@@ -207,12 +254,14 @@ module.exports = {
     })
   },
   googleOAuth: async (req, res, next) => {
-    const token = signToken(req.user)
+    const token = await
+      signToken(req.user)
     res.status(200).json({ token })
   },
 
   facebookOAuth: async (req, res, next) =>{
-    const token = signToken(req.user)
+    const token = await
+      signToken(req.user)
     res.status(201).json({ token })
   },
 
@@ -245,11 +294,12 @@ module.exports = {
     // save user, hit them with a token!
     await newUser.save()
 
-    let userId = await User.find({"local.email": email}, "id").exec()
+    let userId = await User.find({"email": email}, "id").exec()
 
     // console.log("userId", userId);
 
-    const token = await signToken(userId[0]._id)
+    const token = await 
+      signToken(userId[0]._id)
 
     res.status(200).json({ token })
   }

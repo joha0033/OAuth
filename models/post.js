@@ -1,11 +1,14 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = 
+  require('mongoose')
 
- // create schema - describe the post
+const Schema = 
+  mongoose.Schema
+
+
 const PostSchema = new Schema({
-  user_id: {
-    type: String,
-    required: true
+  user_id: { 
+    type: Schema.Types.ObjectId, 
+    ref: 'user' 
   },
   title: {
     type: String,
@@ -32,13 +35,19 @@ const PostSchema = new Schema({
   downvotes: {
     type: Number
   },
-  comments: [{ type: Schema.Types.ObjectId, ref: 'comment' }]
+  comments: [
+    { 
+      type: Schema.Types.ObjectId, 
+      ref: 'comment' 
+    }
+  ]
   
 })
 
- // create model
-const Post = mongoose.model('post', PostSchema)
+const Post = mongoose
+  .model(
+    'post', 
+    PostSchema
+  )
 
-
- // export schemap
 module.exports = Post

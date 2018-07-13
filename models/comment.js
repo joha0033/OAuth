@@ -1,10 +1,14 @@
-const mongoose = require('mongoose')
-const Schema = mongoose.Schema
+const mongoose = 
+  require('mongoose')
 
- // create schema - describe the post
+const Schema = 
+  mongoose.Schema
+
+
 const CommentSchema = new Schema({
   user_id: { 
-    type: Schema.Types.ObjectId, ref: 'user' 
+    type: Schema.Types.ObjectId, 
+    ref: 'user' 
   },
   date: { 
     type: Date, 
@@ -15,7 +19,8 @@ const CommentSchema = new Schema({
     required: true
   },
   post_id:{
-    type: Schema.Types.ObjectId, ref: 'post' 
+    type: Schema.Types.ObjectId, 
+    ref: 'post' 
   },
   upvotes: {
     type: Number
@@ -25,9 +30,10 @@ const CommentSchema = new Schema({
   }
 })
 
- // create model
-const Comment = mongoose.model('comment', CommentSchema)
+const Comment = mongoose
+  .model(
+    'comment', 
+    CommentSchema
+  )
 
-
- // export schemap
 module.exports = Comment

@@ -1,11 +1,19 @@
-const express = require('express');
-const router = require('express-promise-router')();
-const CommentsController = require('../controllers/comments_controller');
+const express = 
+    require('express');
 
-router.route('/getall').get(CommentsController.getAll)
+const requestTo = 
+    require('express-promise-router')();
 
-router.route('/seed').get(CommentsController.seed)
+const CommentsController = 
+    require('../controllers/comments_controller');
 
+requestTo
+    .route(
+        '/getall'
+    )
+    .get(
+        CommentsController
+            .getAll
+    )
 
-
-module.exports = router
+module.exports = requestTo
