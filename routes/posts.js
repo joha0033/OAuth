@@ -1,18 +1,35 @@
-const express = require('express');
+const express = 
+    require('express');
+
 // const router = express.Router()
-const router = require('express-promise-router')();
+const requestTo = 
+    require('express-promise-router')();
 
-const { validateBody, schemas } = require('../helpers/routeHelpers')
-const PostsController = require('../controllers/posts_controller');
+const { 
+    validateBody, 
+    schemas 
+} = 
+    require('../helpers/routeHelpers')
 
-
-
-router.route('/create').post(validateBody(schemas.postSchema), PostsController.create)
-
-router.route('/getall').get(PostsController.getAll)
-
-router.route('/seed').get(PostsController.seed)
-
+const PostsController = 
+    require('../controllers/posts_controller');
 
 
-module.exports = router
+requestTo
+    .route(
+        '/create'
+    )
+    .post(
+        PostsController
+        .create
+    )
+
+requestTo
+    .route(
+        '/getall'
+    )
+    .get(
+        PostsController.getAll
+    )
+
+module.exports = requestTo

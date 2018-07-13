@@ -1,16 +1,35 @@
-const mongoose = require('mongoose')
-const bcrypt = require('bcryptjs')
-const Schema = mongoose.Schema
+const mongoose = 
+  require('mongoose')
 
-// shorten user ID some how...
- // create schema - describe the user
+const bcrypt =
+  require('bcryptjs')
+
+const Schema = 
+  mongoose.Schema
+
+const shortId = 
+  require('shortId')
+
+
 const UserSchema = new Schema({
   method: {
     type: String,
-    enum: ['local', 'google', 'facebook'],
+    enum: [
+      'local', 
+      'google', 
+      'facebook'
+    ],
     required: true
   },
-
+  shortId: {
+    type: String, 
+    // unique: true, 
+    default: shortId.generate()
+  },
+  username:{
+    type: String,
+    required: true
+  },
   google:{
     id:{
       type: String,
@@ -20,15 +39,8 @@ const UserSchema = new Schema({
       lowercase: true
     }
   },
-
   facebook: {
     id:{
-      type: String,
-    },
-    firstName: {
-      type: String,
-    },
-    lastName: {
       type: String,
     },
     email:{
@@ -39,74 +51,61 @@ const UserSchema = new Schema({
       type: String,
     }
   },
-
-  local: {
-    firstName: {
-      type: String,
-      lowercase: true
-    },
-    lastName: {
-      type: String,
-      lowercase: true
-    },
-    email: {
-      type: String,
-      lowercase: true
-    },
-    password: {
-      type: String,
-    }
-
+  firstName: {
+    type: String,
+    lowercase: true
+  },
+  lastName: {
+    type: String,
+    lowercase: true
+  },
+  email: {
+    type: String,
+    lowercase: true
+  },
+  password: {
+    type: String
   }
-
 })
 
-//before you save a user, lets hash the password
 UserSchema.pre('save', async function(next) {
-
-  // if they're trying to log in with G+ or FB, we can next.
   if(this.method !== 'local'){
     next()
   }
-
-  // if the signup method is local, lets hash the password
   try {
+    const salt = await 
+      bcrypt.genSalt(10)
+    const hash = await 
+      bcrypt
+        .hash(
+          this.password, 
+          salt
+        )
 
-    //create salt and hash it!
-    const salt = await bcrypt.genSalt(10)
-    const hash = await bcrypt.hash(this.local.password, salt)
+    this.password = hash
 
-    //change the original password to hashed password
-    this.local.password = hash
-
-    //peace!
     next()
-
   } catch(error) {
-
     next(error)
-
   }
 })
 
-// lets compare hash passwords and see if they match!
 UserSchema.methods.isValidPassword = async function(newPassword) {
-
   try {
-
-    //should return true or false.
-    return await bcrypt.compare(newPassword, this.local.password);
-
+    return await bcrypt
+      .compare(
+        newPassword, 
+        this.password
+      )
   } catch(error) {
-
     throw new Error(error);
-
   }
 }
 
- // create model
-const User = mongoose.model('user', UserSchema)
+const User = mongoose
+  .model(
+    'user', 
+    UserSchema
+  )
 
-
- // export schema
 module.exports = User
