@@ -41,7 +41,7 @@ passport
       done 
     ) => {
       let username = payload.username
-
+      
       try {
         payload = { 
           ...payload, 

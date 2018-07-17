@@ -7,8 +7,8 @@ const Schema =
 
 const PostSchema = new Schema({
   user_id: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'user' 
+    type: Schema.Types.ObjectId,
+    ref: 'user'
   },
   title: {
     type: String,
@@ -43,6 +43,7 @@ const PostSchema = new Schema({
   ]
   
 })
+
 
 const Post = mongoose
   .model(

@@ -132,7 +132,6 @@ module.exports = {
         id, 
         changes
       )
-      console.log(post);
       
     res.json({
       post
