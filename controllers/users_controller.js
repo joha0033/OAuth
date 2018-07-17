@@ -1,10 +1,9 @@
-
-
 const mongoose = 
   require('mongoose')
 
 const JWT = 
   require('jsonwebtoken')
+
 
 const User = 
   require('../models/user')
@@ -17,18 +16,6 @@ const Comment =
 
 const { Jwt_Secret } = 
   require('../configuration')
-
-const { userSeeds } = 
-  require('./seeds/user_seeds')
-
-const { postSeeds } = 
-  require('./seeds/post_seeds')
-
-const { commentSeeds } = 
-  require('./seeds/comment_seeds')
-
-const async = 
-  require('async')
 
 
 const signToken = async (username) => {
@@ -47,13 +34,13 @@ module.exports = {
   getAll: async (req, res, next) => {
     let users = await User
       .find({})
-      .select('-password -_id -shortId -method -__v')
+      .select('-password -shortId -method -__v')
       .populate({
         path: 'posts', 
-        select: 'date title content comments -_id ',
+        select: 'date title content comments -_id user_id ',
         populate: { 
-          path: 'comments',
-          select: 'user_id date content upvotes -_id',
+          path: 'comments user_id',
+          select: 'firstName lastName user_id date content upvotes -_id',
           populate: {
             path: 'author',
             select: 'firstName lastName username -_id'
@@ -82,7 +69,8 @@ module.exports = {
   },
   editProfile: async (req, res, next) => {
     let { username } = req.params
-    let { password } = req.body
+    let { password, email } = req.body
+    
     const token = await 
       signToken(username)
     
@@ -92,8 +80,11 @@ module.exports = {
       }, { //change
         password, 
         ...req.body 
-      }).exec()
-
+      }, {new: true}, (err, user) =>{
+        user.save()
+      })
+      
+      
     res.json({
       token,
       updatedData: userData,
@@ -157,15 +148,16 @@ module.exports = {
       msg: 'deleted'
     })
   },
-  signUp: async (req, res, next) => {
+  signUp: async (req, res, next) => {    
     let { 
         firstName, 
         lastName, 
         email, 
         password 
       } = req.body
-    const username = req.body
+    let username = req.body
       .email.split(/[@]/)[0]
+    
     const updateMsg = 'N/A, please update profile information'
 
     firstName === undefined 
@@ -203,20 +195,24 @@ module.exports = {
       email,
       password,
     })
+
+    
   
     await newUser.save()
     
-    let userId = await User
+    let usernameFound = await User
       .findOne({
         email
-      }, 
-      '_id')
+      })
 
+    username = usernameFound.username
+    
+    
     const token = await 
       signToken(username)
     
     res.status(200).json({ 
-      ...userId._doc, 
+      username, 
       token 
     })
   },
@@ -224,7 +220,7 @@ module.exports = {
     const { 
       username,
     } = req.user
-
+    
     const token = await 
       signToken(username)
   
@@ -287,7 +283,6 @@ module.exports = {
 
     let userId = await User.find({'email': email}, 'id').exec()
 
-    // console.log("userId", userId);
 
     const token = await 
       signToken(userId[0]._id)
