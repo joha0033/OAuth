@@ -65,8 +65,27 @@ const UserSchema = new Schema({
   },
   password: {
     type: String
-  }
+  },
+  posts: [{
+      type: Schema.Types.ObjectId, 
+      ref: 'post' 
+  }]
 })
+
+UserSchema
+  .virtual('fullName')
+    .get(function() {
+      let fullName = this.firstName + ' ' + this.lastName
+      return fullName
+    })
+      .set(function(name){
+        return name
+    })
+
+
+UserSchema.set('toObject', { virtuals: true });
+UserSchema.set('toJSON', { virtuals: true });
+UserSchema.set('id', false);
 
 UserSchema.pre('save', async function(next) {
   if(this.method !== 'local'){
@@ -89,6 +108,7 @@ UserSchema.pre('save', async function(next) {
     next(error)
   }
 })
+
 
 UserSchema.methods.isValidPassword = async function(newPassword) {
   try {

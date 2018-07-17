@@ -6,9 +6,12 @@ const Schema =
 
 
 const CommentSchema = new Schema({
+  // user_id: { 
+  //   type: Schema.Types.ObjectId, 
+  //   ref: 'user'
+  // },
   user_id: { 
-    type: Schema.Types.ObjectId, 
-    ref: 'user' 
+    type: String
   },
   date: { 
     type: Date, 
@@ -29,6 +32,18 @@ const CommentSchema = new Schema({
     type: Number
   }
 })
+
+CommentSchema
+  .virtual('author', {
+    ref: 'user', 
+    localField: 'user_id', 
+    foreignField: '_id',
+    justOne: true
+  })
+
+CommentSchema.set('toObject', { virtuals: true });
+CommentSchema.set('toJSON', { virtuals: true });
+CommentSchema.set('id', false);
 
 const Comment = mongoose
   .model(
