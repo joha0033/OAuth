@@ -134,7 +134,6 @@ const createPost = (
 
             posts
                 .push(newPost)
-
             callback(null, newPost)
         })
     }
@@ -149,7 +148,8 @@ const createUsers = ( cb ) => {
             "email": "testlocal@gmail.com",
             "password": "test321",
             "createdOn": Date().now,
-            "method": "local"
+            "method": "local",
+
         }, callback),
         (callback) => createUser({
             "username": "swifty",
@@ -176,7 +176,7 @@ const createUsers = ( cb ) => {
             "email": "DKnots@gmail.com",
             "password": "test321",
             "createdOn": Date().now,
-            "method": "local",
+            "method": "local",        
         }, callback),
         (callback) => createUser({
             "username": "test",
@@ -369,6 +369,47 @@ const createPosts = ( cb ) => {
     ], cb)
 }
 
+const fillUserPosts = (cb) => {
+    posts.map((post) => {
+        users.map((user) => {
+            if(post.user_id === user._id) {
+                user.posts
+                    .push(post._id)
+            }
+        })
+    })
+    cb(null, users)
+}
+
+const updateUsersWithPosts = (cb) => {
+   users.map((user) => {
+        let id = user._id
+        let change = {
+           $set: {
+               posts: [ 
+                   ...user.posts
+                ]
+            }
+        }
+        let options = {
+           new: true
+        }
+        const queryCallback = (err, user) => {
+            if (err) cb(err, null);
+        }
+
+       User
+        .findByIdAndUpdate(
+            id, 
+            change, 
+            options, 
+            queryCallback
+      );
+   })
+
+   cb(null, 'dick')
+}
+
 const seriesCallback = (
     err, 
     results
@@ -379,19 +420,21 @@ const seriesCallback = (
                 err
             ) 
         } else { 
-        console.log(
-            'series results: ', 
-            results
-        )
+            console.log(
+                'series results: ', 
+                results
+            )
 
-        mongoose
-            .connection
-                .close()
+            mongoose
+                .connection
+                    .close()
         }
     }
 
 async.series([
     createUsers,
     createComments,
-    createPosts
+    createPosts,
+    fillUserPosts,
+    updateUsersWithPosts
 ], seriesCallback)             
