@@ -29,63 +29,54 @@ const { commentSeeds } =
 
 const async = 
   require('async')
-;
+
 
 const signToken = async (username) => {
   return JWT.sign({
     iss: 'austin',
     username,
-    iat: new Date().getTime(),
-    exp: new Date().setDate(new Date().getDate() + 1 )
+    iat: new Date()
+      .getTime(),
+    exp: new Date()
+      .setDate(new Date()
+        .getDate() + 1 )
   }, Jwt_Secret)
 }
 
 module.exports = {
   getAll: async (req, res, next) => {
-    let users = await User.find({}) // all
-    let allUsersWithPosts = []
-    
-    users.map((user) => {
-      let user_id = user.id
-      Post.find({
-        user_id
-      }, (err, posts) => {
-        user = { 
-          ...user._doc, 
-          posts
+    let users = await User
+      .find({})
+      .select('-password -_id -shortId -method -__v')
+      .populate({
+        path: 'posts', 
+        select: 'date title content comments -_id ',
+        populate: { 
+          path: 'comments',
+          select: 'user_id date content upvotes -_id',
+          populate: {
+            path: 'author',
+            select: 'firstName lastName username -_id'
+          }
         }
-        allUsersWithPosts.push(user)
       })
-    }) 
 
-    //  eww... i had to.
-    setTimeout(() => {
-      res.json(allUsersWithPosts)
-    }, 200)
+    res.json(users)
   },
   getProfile: async (req, res, next) => {
     let { username } = req.params
-    let user = await User
+    let usersProfile = await User
       .findOne({
        username
       })
-    
-    let user_id = user._id
-    let posts = await Post
-      .find({
-       user_id
-      })
+      .select('-password -method')
       .populate({
-        path: 'comments', 
+        path: 'posts', 
         populate: {
-          path: 'user_id'
+          path: 'comments',
+          populate: 'user_id'
         }
       })
-
-    let usersProfile = { 
-      ...user._doc, 
-      posts
-    }
 
     res.json(usersProfile)
   },
@@ -146,12 +137,12 @@ module.exports = {
     let changes = JSON.stringify(req.body)
 
     let post = await Post
-      .findByIdAndUpdate({
-          id
-        }, 
+      .findByIdAndUpdate(
+        id, 
         changes
       )
-
+      console.log(post);
+      
     res.json({
       post
     })
@@ -167,7 +158,7 @@ module.exports = {
     })
   },
   signUp: async (req, res, next) => {
-    const { 
+    let { 
         firstName, 
         lastName, 
         email, 
@@ -194,7 +185,7 @@ module.exports = {
 
     const userExisits = await User
       .findOne({ 
-        email 
+        username 
       })
 
     if(!!userExisits){
@@ -216,16 +207,16 @@ module.exports = {
     await newUser.save()
     
     let userId = await User
-      .find({
+      .findOne({
         email
       }, 
-      "_id")
+      '_id')
 
     const token = await 
       signToken(username)
     
     res.status(200).json({ 
-      ...newUser._doc, 
+      ...userId._doc, 
       token 
     })
   },
@@ -294,7 +285,7 @@ module.exports = {
     // save user, hit them with a token!
     await newUser.save()
 
-    let userId = await User.find({"email": email}, "id").exec()
+    let userId = await User.find({'email': email}, 'id').exec()
 
     // console.log("userId", userId);
 
