@@ -51,8 +51,8 @@ module.exports = {
     res.json(users)
   },
   getProfile: async (req, res, next) => {
-    let { username } = req.params
-    let usersProfile = await User
+    const { username } = req.params
+    const usersProfile = await User
       .findOne({
        username
       })
@@ -64,17 +64,14 @@ module.exports = {
           populate: 'user_id'
         }
       })
+      
 
     res.json(usersProfile)
   },
   editProfile: async (req, res, next) => {
-    let { username } = req.params
-    let { password, email } = req.body
-    
-    const token = await 
-      signToken(username)
-    
-    let userData = await User
+    const { username } = req.params
+    const { password, email } = req.body
+    const userData = await User
       .findOneAndUpdate({ 
         username 
       }, { //change
@@ -83,8 +80,10 @@ module.exports = {
       }, {new: true}, (err, user) =>{
         user.save()
       })
-      
-      
+
+    const token = await 
+      signToken(username)
+    
     res.json({
       token,
       updatedData: userData,
@@ -94,16 +93,23 @@ module.exports = {
   },
   getUsersPost: async (req, res, next) => {
     let { username } = req.user
-    let posts = await Post
-      .find({
-        username
+    let posts = await User
+      .findOne({username})
+      .populate({
+        path: 'posts',
+        populate: {
+          path: 'comments',
+          populate: {
+            path: 'author',
+            select: 'username'
+          }
+        }
       })
-      .populate('comments')
-      .exec()
+      .select('posts')
 
-    res.json({
+    res.json(
       posts
-    })
+    )
     
   },
   getOnePost: async (req, res, next) => {

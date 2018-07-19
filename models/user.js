@@ -69,7 +69,12 @@ const UserSchema = new Schema({
   posts: [{
       type: Schema.Types.ObjectId, 
       ref: 'post' 
-  }]
+  }],
+  isAdmin: {
+    type: Boolean,
+    default: false,
+    required: true
+  }
 })
 
 UserSchema

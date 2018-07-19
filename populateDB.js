@@ -3,6 +3,7 @@ console.log(
 'Specified database as argument -', 
 'e.g.: populatedb mongodb://your_username:your_password@your_dabase_url');
 
+// TO RUN >$ node populatedb mongodb://localhost/APIAuthentication
 //Get arguments passed on command line
 let userArgs = process.argv.slice(2);
 
@@ -149,7 +150,7 @@ const createUsers = ( cb ) => {
             "password": "test321",
             "createdOn": Date().now,
             "method": "local",
-
+            "isAdmin": true
         }, callback),
         (callback) => createUser({
             "username": "swifty",
