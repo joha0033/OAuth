@@ -7,7 +7,7 @@ module.exports = {
     return (req, res, next) => {
       // req.body will become result.value //
       const result = Joi.validate(req.body, schema)
-
+      
       if(result.error){
         return res.status(400).json(result.error)
       }
@@ -24,8 +24,8 @@ module.exports = {
   schemas: {
     //create the auth schema for joi, used as arg above
     registerSchema: Joi.object().keys({
-      firstName: Joi.string(),
-      lastName: Joi.string(),
+      firstName: Joi.string().allow('', null),
+      lastName: Joi.string().allow('', null),
       email: Joi.string().email().required(),
       password: Joi.string().required()
     }),
