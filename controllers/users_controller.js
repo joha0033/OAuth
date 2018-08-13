@@ -4,7 +4,6 @@ const mongoose =
 const JWT = 
   require('jsonwebtoken')
 
-
 const User = 
   require('../models/user')
 
@@ -51,7 +50,7 @@ module.exports = {
     res.json(users)
   },
   getProfile: async (req, res, next) => {
-    const { username } = req.params
+    const username = req.user.username
     const usersProfile = await User
       .findOne({
        username
@@ -65,48 +64,62 @@ module.exports = {
         }
       })
       
-
     res.json(usersProfile)
   },
   editProfile: async (req, res, next) => {
-    const { username } = req.params
-    const { password, email } = req.body
-    const userData = await User
-      .findOneAndUpdate({ 
-        username 
-      }, { //change
-        password, 
-        ...req.body 
-      }, {new: true}, (err, user) =>{
-        user.save()
-      })
+    const updateSuccess = 'Success!' 
+    const { 
+      username
+    } = req.user.found
+    const { 
+      password, 
+      firstName, 
+      lastName, 
+      email 
+    } = req.body
 
-    const token = await 
+    const updatedData = await User
+    .findOneAndUpdate({ 
+      // username: username + 'r'
+      username
+    }, {
+      firstName, 
+      lastName, 
+      email 
+    })
+    if ( updatedData ) {
+      const token = await 
       signToken(username)
     
     res.json({
       token,
-      updatedData: userData,
-      update: 'success'
+      updatedData,
+      updateSuccess
      })
-    
+    } else {
+      res.json({msg:'user not found'})
+    }
   },
   getUsersPost: async (req, res, next) => {
     let { username } = req.user
+    
     let posts = await User
       .findOne({username})
       .populate({
         path: 'posts',
+        select: '-fullName',
         populate: {
           path: 'comments',
+          select: '-fullName',
           populate: {
             path: 'author',
-            select: 'username'
+            select: 'username',
+            
           }
         }
       })
       .select('posts')
-
+      
     res.json(
       posts
     )
@@ -201,17 +214,14 @@ module.exports = {
       password,
     })
 
-    
-  
     await newUser.save()
     
-    let usernameFound = await User
+    let findUser = await User
       .findOne({
         email
       })
 
-    username = usernameFound.username
-    
+    username = findUser.username
     
     const token = await 
       signToken(username)
@@ -223,7 +233,7 @@ module.exports = {
   },
   signIn: async (req, res, next) => {
     const { 
-      username,
+      username
     } = req.user
     
     const token = await 
@@ -264,7 +274,6 @@ module.exports = {
     
     // save data
     const { email, password } = req.body
-    // delete email if it already exists in DB
     const deleteUsers = await User.find({'facebook.email': email}).remove().exec()
     const foundUser = await User.findOne({'facebook.email': email})
 
@@ -274,8 +283,6 @@ module.exports = {
       return res.status(403).json({error: 'email already exists'})
     }
 
-    
-    // create a user object with imported schema
     const newUser = new User({
       method: 'facebook',
       facebook: {
@@ -283,7 +290,7 @@ module.exports = {
         password: password
       }
     })
-    // save user, hit them with a token!
+
     await newUser.save()
 
     let userId = await User.find({'email': email}, 'id').exec()

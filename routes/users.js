@@ -89,7 +89,7 @@ requestTo
 
 requestTo
   .route(
-    '/profile/:username'
+    '/profile/'
   )
   .get(
     passportJWT, 
@@ -99,7 +99,7 @@ requestTo
 
 requestTo
   .route(
-    '/profile/:username/edit'
+    '/profile/edit'
   )
   .put(
     passportJWT, 
@@ -109,7 +109,7 @@ requestTo
 
 requestTo
   .route(
-    '/profile/:username/posts'
+    '/profile/posts'
   )
   .get(
     passportJWT, 

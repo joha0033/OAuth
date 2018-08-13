@@ -41,7 +41,7 @@ passport
       done 
     ) => {
       let username = payload.username
-      
+
       try {
         payload = { 
           ...payload, 
@@ -50,7 +50,7 @@ passport
               username
             })
         }
-    
+        
         done(null, payload);
       } catch (error) {
         done(error, false)
@@ -176,19 +176,20 @@ passport
       email, 
       password, 
       done ) => {
+        
         try {
           const user = await User
             .findOne({ 
               email 
             })
-
+            
           if( !user ) {
             return done( null, false )
           } 
 
           const isMatch = await user
             .isValidPassword(password)
-
+          
           if( !isMatch ) {
             return done(null, false);
           }
