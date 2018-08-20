@@ -17,6 +17,8 @@ const { Jwt_Secret } =
   require('../configuration')
 
 
+
+
 const signToken = async (username) => {
   return JWT.sign({
     iss: 'austin',
@@ -67,26 +69,48 @@ module.exports = {
     res.json(usersProfile)
   },
   editProfile: async (req, res, next) => {
-    const updateSuccess = 'Success!' 
+    const updateSuccess = 'Success!'
+    console.log(req.body);
+    
+    let profileImage
+    let bannerImage 
+    req.files || req.file 
+      ? (profileImage = req.files.profileImage[0], 
+        bannerImage = req.files.bannerImage[0])
+      : null
+    
+    
+    const reader = new FileReader;
+    reader.onload = () => {
+      const dataURL = reader.result;
+      const base64 = reader.result.split(",").pop();
+      console.log(dataURL, base64);
+    }
+    input.onchange = () => {
+      reader.abort();
+      reader.readAsDataURL(`input.files[0]`);
+    }
+
     const { 
       username
     } = req.user.found
+    console.log(req.body);
+    
     const { 
-      password, 
       firstName, 
-      lastName, 
-      email 
+      lastName
     } = req.body
-
+    
     const updatedData = await User
     .findOneAndUpdate({ 
-      // username: username + 'r'
       username
     }, {
       firstName, 
-      lastName, 
-      email 
+      lastName,
+      profileImage,
+      bannerImage 
     })
+
     if ( updatedData ) {
       const token = await 
       signToken(username)

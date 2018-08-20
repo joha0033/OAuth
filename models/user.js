@@ -66,6 +66,12 @@ const UserSchema = new Schema({
   password: {
     type: String
   },
+  profileImage: {
+    type: String // not correct
+  },
+  bannerImage: {
+    type: String // not correct
+  },
   posts: [{
       type: Schema.Types.ObjectId, 
       ref: 'post' 

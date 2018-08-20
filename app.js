@@ -15,11 +15,21 @@ const morgan =
 
 const bodyParser = 
   require('body-parser')
+
 const mongoose = 
   require('mongoose')
 
 const config = 
   require('./configuration')
+
+// const multer = 
+//   require('multer')
+
+// var upload = 
+//   multer({ 
+//     dest: './uploads' 
+//   }) 
+
   
 const dbURL = 
   'mongodb://'+process.env.DATABASE_CRED+':'+process.env.DATABASE_CRED+'@ds121099.mlab.com:21099/'+process.env.DATABASE_NAME
@@ -45,6 +55,10 @@ if (!process.env.NODE_ENV === 'test') {
   app.use(morgan('dev'));
 
 }
+
+app.use((req, res, next) => {
+  next()
+})
 
 // MIDDLEWARE
 app
@@ -100,6 +114,8 @@ app
       './routes/comments.js'
     )
   )
+
+
 
 module.exports = app
 

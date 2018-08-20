@@ -34,8 +34,7 @@ const passportJWT = passport
     { 
       session: false 
     }
-  );
-
+  ); 
 
 requestTo
   .route(
@@ -54,7 +53,7 @@ requestTo
     validateBody(
       schemas
         .registerSchema
-    ), 
+    ),
     UsersController
       .signUp
   )
@@ -97,12 +96,26 @@ requestTo
       .getProfile
   )
 
+
+const multer = 
+  require('multer')
+
+var upload = 
+  multer({ 
+    dest: './uploads' 
+  })
+
 requestTo
   .route(
     '/profile/edit'
   )
   .put(
-    passportJWT, 
+    // upload.single('bannerImage'),
+    upload.fields([
+      { name: 'bannerImage', maxCount: 1 },
+      { name: 'profileImage', maxCount: 1 }
+    ]),
+    passportJWT,
     UsersController
       .editProfile
   )
