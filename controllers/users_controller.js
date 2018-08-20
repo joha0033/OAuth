@@ -70,8 +70,6 @@ module.exports = {
   },
   editProfile: async (req, res, next) => {
     const updateSuccess = 'Success!'
-    console.log(req.body);
-    
     let profileImage
     let bannerImage 
     req.files || req.file 
@@ -84,7 +82,6 @@ module.exports = {
     reader.onload = () => {
       const dataURL = reader.result;
       const base64 = reader.result.split(",").pop();
-      console.log(dataURL, base64);
     }
     input.onchange = () => {
       reader.abort();
@@ -94,7 +91,6 @@ module.exports = {
     const { 
       username
     } = req.user.found
-    console.log(req.body);
     
     const { 
       firstName, 
